@@ -1,9 +1,13 @@
-import { Button } from '@/components/ui/button';
+import { Heading } from './_components/heading';
 
-export default function Home() {
+const MarketingPage = () => {
   return (
-    <div>
-      <Button className="bg-emerald-500 text-white">Delete</Button>
+    <div className="min-h-full flex flex-col">
+      <div className="flex flex-col items-center justify-center md:justify-start text-center gap-y-8 flex-1 px-6 pb-10">
+        <Heading />
+      </div>
     </div>
   );
-}
+};
+
+export default MarketingPage;
