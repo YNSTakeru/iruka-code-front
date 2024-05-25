@@ -1,6 +1,8 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { useUser } from '@clerk/clerk-react';
+import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
@@ -28,6 +30,10 @@ const ProjectsPage = () => {
         className="hidden dark:block border rounded-full h-[300px] w-[300px]"
       />
       <h2>{name}さん、Iruka Codeへようこそ！</h2>
+      <Button>
+        <PlusCircle className="h-4 w-4 mr-2" />
+        プロジェクトを作成する
+      </Button>
     </div>
   );
 };
