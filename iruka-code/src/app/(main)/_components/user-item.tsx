@@ -1,11 +1,13 @@
 'use client';
 
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { useUser } from '@clerk/clerk-react';
 import {
   DropdownMenu,
+  DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu';
+} from '@/components/ui/dropdown-menu';
+import { useUser } from '@clerk/clerk-react';
+
 import { ChevronsLeftRight } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
@@ -34,6 +36,18 @@ export const UserItem = () => {
           <ChevronsLeftRight className="rotate-90 ml-2 text-muted-foreground h-4 w-4" />
         </div>
       </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-80"
+        align="start"
+        alignOffset={11}
+        forceMount
+      >
+        <div className="flex flex-col space-y-4 p-2">
+          <p className="text-xs font-medium leading-none">
+            {user.emailAddresses[0].emailAddress}
+          </p>
+        </div>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 };
