@@ -117,12 +117,9 @@ export const Navigation = () => {
           )}
         >
           <ChevronsLeft className="h-6 w-6" />
-          <div>
-            <UserItem />
-          </div>
         </div>
         <div>
-          <p>Action items</p>
+          <UserItem />
         </div>
         <div className="mt-4">
           <p>Documents</p>
