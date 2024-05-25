@@ -52,6 +52,9 @@ export const UserItem = () => {
                 <AvatarImage src={user.imageUrl} />
               </Avatar>
             </div>
+            <div className="space-y-1">
+              <p className="text-sm line-clamp-1">{name}のプロジェクト</p>
+            </div>
           </div>
         </div>
       </DropdownMenuContent>
