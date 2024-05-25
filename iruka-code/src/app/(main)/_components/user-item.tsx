@@ -4,9 +4,11 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUser } from '@clerk/clerk-react';
+import { SignOutButton, useUser } from '@clerk/clerk-react';
 
 import { ChevronsLeftRight } from 'lucide-react';
 import { redirect } from 'next/navigation';
@@ -57,6 +59,13 @@ export const UserItem = () => {
             </div>
           </div>
         </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          asChild
+          className="w-full cursor-pointer text-muted-foreground"
+        >
+          <SignOutButton>ログアウトする</SignOutButton>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
