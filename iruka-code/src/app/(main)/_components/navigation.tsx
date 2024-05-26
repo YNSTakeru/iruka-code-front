@@ -1,6 +1,8 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { api } from '@convex/_generated/api';
+import { useQuery } from 'convex/react';
 import { ChevronsLeft, MenuIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
@@ -10,6 +12,7 @@ import { UserItem } from './user-item';
 export const Navigation = () => {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const teams = useQuery(api.teams.get);
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<'aside'>>(null);
@@ -122,7 +125,7 @@ export const Navigation = () => {
           <UserItem />
         </div>
         <div className="mt-4">
-          <p>Documents</p>
+          {teams?.map((team) => <p key={team._id}>{team.title}</p>)}
         </div>
         <div
           onMouseDown={handleMouseDown}
