@@ -3,10 +3,11 @@
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
 import { useQuery } from 'convex/react';
-import { ChevronsLeft, MenuIcon } from 'lucide-react';
+import { ChevronsLeft, MenuIcon, PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
+import { Item } from './item';
 import { UserItem } from './user-item';
 
 export const Navigation = () => {
@@ -123,6 +124,7 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
+          <Item onClick={() => {}} label="新規チーム作成" icon={PlusCircle} />
         </div>
         <div className="mt-4">
           {teams?.map((team) => <p key={team._id}>{team.title}</p>)}
