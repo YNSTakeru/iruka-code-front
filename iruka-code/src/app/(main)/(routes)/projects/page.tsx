@@ -2,16 +2,29 @@
 
 import { Button } from '@/components/ui/button';
 import { useUser } from '@clerk/clerk-react';
+import { api } from '@convex/_generated/api';
+import { useMutation } from 'convex/react';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import { toast } from 'sonner';
 
 const ProjectsPage = () => {
   const { user } = useUser();
+  const create = useMutation(api.teams.create);
 
   if (!user) return redirect('/');
 
   const name = user.firstName ? user.firstName : user.username;
+
+  const onCreate = async () => {
+    const promise = create({ title: '未タイトル' });
+    toast.promise(promise, {
+      loading: 'チームを作成しています...',
+      success: 'チームを作成しました！',
+      error: 'チームの作成に失敗しました。',
+    });
+  };
 
   return (
     <div className="h-full flex flex-col items-center justify-center space-y-4">
@@ -30,9 +43,9 @@ const ProjectsPage = () => {
         className="hidden dark:block border rounded-full h-[300px] w-[300px]"
       />
       <h2>{name}さん、Iruka Codeへようこそ！</h2>
-      <Button>
+      <Button onClick={onCreate}>
         <PlusCircle className="h-4 w-4 mr-2" />
-        プロジェクトを作成する
+        チームを作成する
       </Button>
     </div>
   );
