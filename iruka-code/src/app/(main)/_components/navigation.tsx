@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import {
   ChevronsLeft,
   MenuIcon,
@@ -15,12 +15,12 @@ import { ElementRef, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useMediaQuery } from 'usehooks-ts';
 import { Item } from './item';
+import { TeamList } from './team-list';
 import { UserItem } from './user-item';
 
 export const Navigation = () => {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const teams = useQuery(api.teams.get);
   const create = useMutation(api.teams.create);
 
   const isResizingRef = useRef(false);
@@ -151,7 +151,7 @@ export const Navigation = () => {
           />
         </div>
         <div className="mt-4">
-          {teams?.map((team) => <p key={team._id}>{team.title}</p>)}
+          <TeamList />
         </div>
         <div
           onMouseDown={handleMouseDown}
