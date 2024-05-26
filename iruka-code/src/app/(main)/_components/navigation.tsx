@@ -3,7 +3,13 @@
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
 import { useMutation, useQuery } from 'convex/react';
-import { ChevronsLeft, MenuIcon, PlusCircle, Search } from 'lucide-react';
+import {
+  ChevronsLeft,
+  MenuIcon,
+  PlusCircle,
+  Search,
+  Settings,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -137,6 +143,7 @@ export const Navigation = () => {
         <div>
           <UserItem />
           <Item label="検索" icon={Search} isSearch onClick={() => {}} />
+          <Item label="設定" icon={Settings} onClick={() => {}} />
           <Item
             onClick={handleCreate}
             label="新規チーム作成"
