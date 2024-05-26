@@ -2,10 +2,11 @@
 
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { ChevronsLeft, MenuIcon, PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { useMediaQuery } from 'usehooks-ts';
 import { Item } from './item';
 import { UserItem } from './user-item';
@@ -14,6 +15,7 @@ export const Navigation = () => {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const teams = useQuery(api.teams.get);
+  const create = useMutation(api.teams.create);
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<'aside'>>(null);
@@ -102,6 +104,16 @@ export const Navigation = () => {
     }
   };
 
+  const handleCreate = () => {
+    const promise = create({ title: '未タイトル' });
+
+    toast.promise(promise, {
+      loading: 'チームを作成しています...',
+      success: 'チームを作成しました！',
+      error: 'チームの作成に失敗しました。',
+    });
+  };
+
   return (
     <>
       <aside
@@ -124,7 +136,11 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          <Item onClick={() => {}} label="新規チーム作成" icon={PlusCircle} />
+          <Item
+            onClick={handleCreate}
+            label="新規チーム作成"
+            icon={PlusCircle}
+          />
         </div>
         <div className="mt-4">
           {teams?.map((team) => <p key={team._id}>{team.title}</p>)}
