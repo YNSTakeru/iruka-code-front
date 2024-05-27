@@ -9,6 +9,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Item } from './item';
 import { ProjectList } from './project-list';
+import { TeamItem } from './team-item';
 
 interface TeamListProps {
   parentTeamId?: Id<'teams'>;
@@ -64,7 +65,7 @@ export const TeamList = ({ parentTeamId, level = 0 }: TeamListProps) => {
       </p>
       {teams.map((team) => (
         <div key={team._id}>
-          <Item
+          <TeamItem
             id={team._id}
             onClick={() => onRedirect(team._id)}
             label={team.title}

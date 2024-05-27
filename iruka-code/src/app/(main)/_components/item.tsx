@@ -7,10 +7,9 @@ import { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { ChevronDown, ChevronRight, LucideIcon, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 
 interface ItemProps {
-  id?: Id<'teams'>;
+  id?: Id<'teams'> | Id<'projects'>;
   teamIcon?: string;
   active?: boolean;
   expanded?: boolean;
@@ -19,6 +18,7 @@ interface ItemProps {
   onExpand?: () => void;
   label: string;
   onClick: () => void;
+  onCreate?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   icon: LucideIcon;
 }
 
@@ -33,6 +33,7 @@ export const Item = ({
   level = 0,
   onExpand,
   expanded,
+  onCreate,
 }: ItemProps) => {
   const router = useRouter();
   const create = useMutation(api.projects.create);
@@ -42,29 +43,6 @@ export const Item = ({
   ) => {
     event.stopPropagation();
     onExpand?.();
-  };
-
-  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    event.stopPropagation();
-    if (!id) return;
-
-    const promise = create({
-      team_id: id,
-      project_name: '空のプロジェクト',
-      max_participant_count: 3,
-      max_class_num: 1,
-    }).then((projectId) => {
-      if (!expanded) {
-        onExpand?.();
-      }
-      //   router.push(`/teams/${id}/projects/${projectId}`);
-    });
-
-    toast.promise(promise, {
-      loading: 'プロジェクトを作成中...',
-      success: 'プロジェクトを作成しました',
-      error: 'プロジェクトの作成に失敗しました',
-    });
   };
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
