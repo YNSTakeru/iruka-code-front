@@ -1,5 +1,3 @@
-'use client';
-
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
 import { Doc, Id } from '@convex/_generated/dataModel';
@@ -8,39 +6,39 @@ import { FileIcon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Item } from './item';
-import { ProjectList } from './project-list';
+import { ProjectItem } from './project-item';
 
-interface TeamListProps {
-  parentTeamId?: Id<'teams'>;
+interface ProjectListProps {
+  teamId?: Id<'teams'>;
   level?: number;
-  data?: Doc<'teams'>[];
+  data?: Doc<'projects'>[];
 }
 
-export const TeamList = ({ parentTeamId, level = 0 }: TeamListProps) => {
+export const ProjectList = ({ teamId, level = 1 }: ProjectListProps) => {
   const params = useParams();
   const router = useRouter();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
-  const onExpand = (teamId: string) => {
+  const onExpand = (projectId: string) => {
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
-      [teamId]: !prevExpanded[teamId],
+      [projectId]: !prevExpanded[projectId],
     }));
   };
 
-  const teams = useQuery(api.teams.getSidebar, {
-    project: parentTeamId,
+  const projects = useQuery(api.projects.getSidebar, {
+    team_id: teamId,
   });
 
-  const onRedirect = (teamId: string) => {
-    router.push(`/teams/${teamId}`);
+  const onRedirect = (projectId: string) => {
+    router.push(`/teams/${teamId}/projects/${projectId}`);
   };
 
-  if (teams === undefined) {
+  if (projects === undefined) {
     return (
       <>
         <Item.Skeleton level={level} />
-        {level === 0 && (
+        {level === 1 && (
           <>
             <Item.Skeleton level={level} />
             <Item.Skeleton level={level} />
@@ -60,24 +58,21 @@ export const TeamList = ({ parentTeamId, level = 0 }: TeamListProps) => {
           level === 0 && 'hidden',
         )}
       >
-        チームがまだありません
+        プロジェクトがまだありません
       </p>
-      {teams.map((team) => (
-        <div key={team._id}>
-          <Item
-            id={team._id}
-            onClick={() => onRedirect(team._id)}
-            label={team.title}
+      {projects.map((project) => (
+        <div key={project._id}>
+          <ProjectItem
+            id={project._id}
+            onClick={() => onRedirect(project._id)}
+            label={project.project_name}
             icon={FileIcon}
-            teamIcon={team.icon}
-            active={params.teamId === team._id}
+            active={params.projectId === project._id}
             level={level}
-            onExpand={() => onExpand(team._id)}
-            expanded={expanded[team._id]}
+            onExpand={() => onExpand(project._id)}
+            expanded={expanded[project._id]}
           />
-          {expanded[team._id] && (
-            <ProjectList teamId={team._id} level={level + 1} />
-          )}
+          {expanded[project._id] && <div>classList</div>}
         </div>
       ))}
     </>

@@ -26,7 +26,7 @@ export const Heading = () => {
       )}
       {isAuthenticated && !isLoading && (
         <Button asChild>
-          <Link href="/projects">
+          <Link href="/teams">
             始める
             <ArrowRight className="h-4 w-4 ml-2" />
           </Link>

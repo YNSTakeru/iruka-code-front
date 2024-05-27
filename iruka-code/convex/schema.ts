@@ -14,4 +14,17 @@ export default defineSchema({
   })
     .index('by_user', ['userId'])
     .index('by_user_parent', ['userId', 'project']),
+
+  projects: defineTable({
+    team_id: v.id('teams'),
+    project_name: v.string(),
+    start_timestamp: v.optional(v.string()),
+    end_timestamp: v.optional(v.string()),
+    is_open: v.boolean(),
+    description: v.optional(v.string()),
+    max_participant_count: v.number(),
+    max_class_num: v.number(),
+    icon: v.optional(v.string()),
+    delete_flg: v.boolean(),
+  }).index('by_team_id', ['team_id']),
 });
