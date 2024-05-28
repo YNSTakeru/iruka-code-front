@@ -28,6 +28,7 @@ export const ProjectItem = ({
         level,
         onExpand,
         expanded,
+        isExpand: false,
       }}
     />
   );
