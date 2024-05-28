@@ -27,4 +27,14 @@ export default defineSchema({
     icon: v.optional(v.string()),
     delete_flg: v.boolean(),
   }).index('by_team_id', ['team_id']),
+
+  classes: defineTable({
+    project_id: v.id('projects'),
+    class_name: v.string(),
+    start_timestamp: v.optional(v.string()),
+    end_timestamp: v.optional(v.string()),
+    is_open: v.boolean(),
+    max_participant_count: v.number(),
+    delete_flg: v.boolean(),
+  }).index('by_project_id', ['project_id']),
 });

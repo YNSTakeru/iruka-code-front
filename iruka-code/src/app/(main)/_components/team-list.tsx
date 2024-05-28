@@ -76,6 +76,7 @@ export const TeamList = ({ parentTeamId, level = 0 }: TeamListProps) => {
             onExpand={() => onExpand(team._id)}
             expanded={expanded[team._id]}
           />
+
           {expanded[team._id] && (
             <ProjectList teamId={team._id} level={level + 1} />
           )}

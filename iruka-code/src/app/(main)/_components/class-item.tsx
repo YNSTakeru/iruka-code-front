@@ -3,14 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { Item, ItemProps } from './item';
 
-export const ProjectItem = ({
+export const ClassItem = ({
   id,
   label,
   onClick,
   icon: Icon,
   active,
   isSearch,
-  level = 1,
+  level = 2,
   onExpand,
   expanded,
 }: ItemProps) => {
@@ -29,6 +29,7 @@ export const ProjectItem = ({
         onExpand,
         expanded,
       }}
+      isExpand={false}
     />
   );
 };

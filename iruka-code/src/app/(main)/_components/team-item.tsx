@@ -3,23 +3,9 @@
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
-import { LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Item } from './item';
-
-interface ItemProps {
-  id?: Id<'teams'>;
-  teamIcon?: string;
-  active?: boolean;
-  expanded?: boolean;
-  isSearch?: boolean;
-  level?: number;
-  onExpand?: () => void;
-  label: string;
-  onClick: () => void;
-  icon: LucideIcon;
-}
+import { Item, ItemProps } from './item';
 
 export const TeamItem = ({
   id,
@@ -34,25 +20,41 @@ export const TeamItem = ({
   expanded,
 }: ItemProps) => {
   const router = useRouter();
-  const create = useMutation(api.projects.create);
+  const projectCreate = useMutation(api.projects.create);
+  const classCreate = useMutation(api.classes.create);
+
+  const maxParticipantCount = 3;
 
   const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
     if (!id) return;
 
-    const promise = create({
-      team_id: id,
+    const projectPromise = projectCreate({
+      team_id: id as Id<'teams'>,
       project_name: '空のプロジェクト',
-      max_participant_count: 3,
+      max_participant_count: maxParticipantCount,
       max_class_num: 1,
     }).then((projectId) => {
       if (!expanded) {
         onExpand?.();
       }
+
+      const classPromise = classCreate({
+        project_id: projectId,
+        class_name: '空のクラス',
+        max_participant_count: maxParticipantCount,
+      });
+
+      toast.promise(classPromise, {
+        loading: 'クラスを作成中...',
+        success: 'クラスを作成しました',
+        error: 'クラスの作成に失敗しました',
+      });
+
       //   router.push(`/teams/${id}/projects/${projectId}`);
     });
 
-    toast.promise(promise, {
+    toast.promise(projectPromise, {
       loading: 'プロジェクトを作成中...',
       success: 'プロジェクトを作成しました',
       error: 'プロジェクトの作成に失敗しました',

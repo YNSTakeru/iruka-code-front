@@ -2,14 +2,12 @@
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
-import { useMutation } from 'convex/react';
 import { ChevronDown, ChevronRight, LucideIcon, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-interface ItemProps {
-  id?: Id<'teams'> | Id<'projects'>;
+export interface ItemProps {
+  id?: Id<'teams'> | Id<'projects'> | Id<'classes'>;
   teamIcon?: string;
   active?: boolean;
   expanded?: boolean;
@@ -20,6 +18,7 @@ interface ItemProps {
   onClick: () => void;
   onCreate?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   icon: LucideIcon;
+  isExpand?: boolean;
 }
 
 export const Item = ({
@@ -34,9 +33,9 @@ export const Item = ({
   onExpand,
   expanded,
   onCreate,
+  isExpand = true,
 }: ItemProps) => {
   const router = useRouter();
-  const create = useMutation(api.projects.create);
 
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -63,13 +62,16 @@ export const Item = ({
           className="h-full rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 mr-1"
           onClick={handleExpand}
         >
-          <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+          {isExpand && (
+            <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+          )}
+          {!isExpand && <div className="w-4" />}
         </div>
       )}
       {teamIcon ? (
         <div className="shrink-0 mr-2 text-[18px]">{teamIcon}</div>
       ) : (
-        <Icon className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
+        <Icon className={cn('shrink-0 h-[18px] mr-2 text-muted-foreground')} />
       )}
 
       <span className="truncate">{label}</span>
@@ -78,7 +80,7 @@ export const Item = ({
           <span className="text-x">⌘</span>K
         </kbd>
       )}
-      {!!id && (
+      {isExpand && !!id && (
         <div className="ml-auto flex items-center gap-x-2">
           <div
             role="button"

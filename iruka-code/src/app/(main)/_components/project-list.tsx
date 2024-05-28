@@ -5,6 +5,7 @@ import { useQuery } from 'convex/react';
 import { FileIcon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { ClassList } from './class-list';
 import { Item } from './item';
 import { ProjectItem } from './project-item';
 
@@ -72,7 +73,13 @@ export const ProjectList = ({ teamId, level = 1 }: ProjectListProps) => {
             onExpand={() => onExpand(project._id)}
             expanded={expanded[project._id]}
           />
-          {expanded[project._id] && <div>classList</div>}
+          {expanded[project._id] && (
+            <ClassList
+              projectId={project._id}
+              teamId={teamId}
+              level={level + 1}
+            />
+          )}
         </div>
       ))}
     </>
