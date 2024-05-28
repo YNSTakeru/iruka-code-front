@@ -1,9 +1,24 @@
 'use client';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { useUser } from '@clerk/clerk-react';
 import { Id } from '@convex/_generated/dataModel';
-import { ChevronDown, ChevronRight, LucideIcon, Plus } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  LucideIcon,
+  MoreHorizontal,
+  Plus,
+  Trash,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export interface ItemProps {
@@ -35,6 +50,7 @@ export const Item = ({
   onCreate,
   isExpand = true,
 }: ItemProps) => {
+  const { user } = useUser();
   const router = useRouter();
 
   const handleExpand = (
@@ -80,15 +96,42 @@ export const Item = ({
           <span className="text-x">⌘</span>K
         </kbd>
       )}
-      {isExpand && !!id && (
+      {!!id && (
         <div className="ml-auto flex items-center gap-x-2">
-          <div
-            role="button"
-            onClick={onCreate}
-            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
-          >
-            <Plus className="h-4 w-4 text-muted-foreground" />
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <div
+                role="button"
+                className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+              >
+                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                <DropdownMenuContent
+                  className="w-60"
+                  align="start"
+                  side="right"
+                  forceMount
+                >
+                  <DropdownMenuItem onClick={() => {}}>
+                    <Trash className="h-4 w-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <div className="text-xs text-muted-foreground p-2">
+                    最終更新者; {user?.username}
+                  </div>
+                </DropdownMenuContent>
+              </div>
+            </DropdownMenuTrigger>
+          </DropdownMenu>
+          {isExpand && (
+            <div
+              role="button"
+              onClick={onCreate}
+              className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+            >
+              <Plus className="h-4 w-4 text-muted-foreground" />
+            </div>
+          )}
         </div>
       )}
     </div>

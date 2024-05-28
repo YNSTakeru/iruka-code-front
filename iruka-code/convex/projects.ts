@@ -1,6 +1,38 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 
+export const archive = mutation({
+  args: {
+    leaderId: v.id('leaderAccessDatetimes'),
+    projectId: v.id('projects'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const existingProject = await ctx.db.get(args.leaderId);
+
+    if (!existingProject) {
+      throw new Error('Project not found');
+    }
+
+    if (existingProject.leader_id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const project = await ctx.db.patch(args.projectId, {
+      is_archived: true,
+    });
+
+    return project;
+  },
+});
+
 export const getSidebar = query({
   args: {
     team_id: v.optional(v.id('teams')),
@@ -25,6 +57,7 @@ export const getSidebar = query({
 export const create = mutation({
   args: {
     project_name: v.string(),
+    class_name: v.string(),
     team_id: v.id('teams'),
     max_participant_count: v.number(),
     max_class_num: v.number(),
@@ -38,15 +71,29 @@ export const create = mutation({
 
     const userId = identity.subject;
 
-    const projects = await ctx.db.insert('projects', {
+    const project = await ctx.db.insert('projects', {
       team_id: args.team_id,
       project_name: args.project_name,
       max_participant_count: args.max_participant_count,
       max_class_num: args.max_class_num,
       is_open: true,
+      is_archived: false,
       delete_flg: false,
     });
 
-    return projects;
+    const leaderAccessDatetime = await ctx.db.insert('leaderAccessDatetimes', {
+      leader_id: userId,
+      project_id: project,
+    });
+
+    const _class = await ctx.db.insert('classes', {
+      project_id: project,
+      class_name: args.class_name,
+      max_participant_count: args.max_participant_count,
+      is_open: true,
+      delete_flg: false,
+    });
+
+    return project;
   },
 });

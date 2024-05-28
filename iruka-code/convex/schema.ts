@@ -21,12 +21,19 @@ export default defineSchema({
     start_timestamp: v.optional(v.string()),
     end_timestamp: v.optional(v.string()),
     is_open: v.boolean(),
+    is_archived: v.boolean(),
     description: v.optional(v.string()),
     max_participant_count: v.number(),
     max_class_num: v.number(),
     icon: v.optional(v.string()),
     delete_flg: v.boolean(),
   }).index('by_team_id', ['team_id']),
+
+  leaderAccessDatetimes: defineTable({
+    leader_id: v.string(),
+    project_id: v.id('projects'),
+    access_date: v.optional(v.string()),
+  }).index('by_leader', ['leader_id']),
 
   classes: defineTable({
     project_id: v.id('projects'),

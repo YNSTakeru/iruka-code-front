@@ -41,7 +41,7 @@ export const create = mutation({
 
     const userId = identity.subject;
 
-    const teams = await ctx.db.insert('teams', {
+    const team = await ctx.db.insert('teams', {
       title: args.title,
       project: args.project,
       userId,
@@ -49,6 +49,6 @@ export const create = mutation({
       isPublished: false,
     });
 
-    return teams;
+    return team;
   },
 });

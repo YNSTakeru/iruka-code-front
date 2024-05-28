@@ -37,7 +37,7 @@ export const create = mutation({
 
     const userId = identity.subject;
 
-    const classes = await ctx.db.insert('classes', {
+    const _class = await ctx.db.insert('classes', {
       project_id: args.project_id,
       class_name: args.class_name,
       max_participant_count: args.max_participant_count,
@@ -45,6 +45,6 @@ export const create = mutation({
       delete_flg: false,
     });
 
-    return classes;
+    return _class;
   },
 });

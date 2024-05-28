@@ -20,8 +20,7 @@ export const TeamItem = ({
   expanded,
 }: ItemProps) => {
   const router = useRouter();
-  const projectCreate = useMutation(api.projects.create);
-  const classCreate = useMutation(api.classes.create);
+  const create = useMutation(api.projects.create);
 
   const maxParticipantCount = 3;
 
@@ -29,9 +28,10 @@ export const TeamItem = ({
     event.stopPropagation();
     if (!id) return;
 
-    const projectPromise = projectCreate({
+    const promise = create({
       team_id: id as Id<'teams'>,
       project_name: '空のプロジェクト',
+      class_name: '空のクラス',
       max_participant_count: maxParticipantCount,
       max_class_num: 1,
     }).then((projectId) => {
@@ -39,22 +39,10 @@ export const TeamItem = ({
         onExpand?.();
       }
 
-      const classPromise = classCreate({
-        project_id: projectId,
-        class_name: '空のクラス',
-        max_participant_count: maxParticipantCount,
-      });
-
-      toast.promise(classPromise, {
-        loading: 'クラスを作成中...',
-        success: 'クラスを作成しました',
-        error: 'クラスの作成に失敗しました',
-      });
-
       //   router.push(`/teams/${id}/projects/${projectId}`);
     });
 
-    toast.promise(projectPromise, {
+    toast.promise(promise, {
       loading: 'プロジェクトを作成中...',
       success: 'プロジェクトを作成しました',
       error: 'プロジェクトの作成に失敗しました',
