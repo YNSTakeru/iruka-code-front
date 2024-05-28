@@ -5,7 +5,7 @@ export default defineSchema({
   teams: defineTable({
     title: v.string(),
     userId: v.string(),
-    isArchived: v.boolean(),
+    is_archived: v.boolean(),
     project: v.optional(v.id('teams')),
     content: v.optional(v.string()),
     coverImage: v.optional(v.string()),
@@ -43,6 +43,7 @@ export default defineSchema({
     start_timestamp: v.optional(v.string()),
     end_timestamp: v.optional(v.string()),
     is_open: v.boolean(),
+    is_archived: v.boolean(),
     max_participant_count: v.number(),
     delete_flg: v.boolean(),
   }).index('by_project_id', ['project_id']),

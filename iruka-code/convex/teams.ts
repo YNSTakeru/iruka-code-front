@@ -19,7 +19,7 @@ export const getSidebar = query({
       .withIndex('by_user_parent', (q) =>
         q.eq('userId', userId).eq('project', args.project),
       )
-      .filter((q) => q.eq(q.field('isArchived'), false))
+      .filter((q) => q.eq(q.field('is_archived'), false))
       .order('desc')
       .collect();
 
@@ -45,7 +45,7 @@ export const create = mutation({
       title: args.title,
       project: args.project,
       userId,
-      isArchived: false,
+      is_archived: false,
       isPublished: false,
     });
 

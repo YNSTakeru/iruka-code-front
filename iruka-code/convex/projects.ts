@@ -99,6 +99,7 @@ export const create = mutation({
       class_name: args.class_name,
       max_participant_count: args.max_participant_count,
       is_open: true,
+      is_archived: false,
       delete_flg: false,
     });
 

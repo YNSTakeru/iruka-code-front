@@ -1,5 +1,6 @@
 'use client';
 
+import { useUser } from '@clerk/clerk-react';
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
@@ -20,6 +21,7 @@ export const TeamItem = ({
   expanded,
 }: ItemProps) => {
   const router = useRouter();
+  const { user } = useUser();
   const create = useMutation(api.projects.create);
 
   const maxParticipantCount = 3;
@@ -64,6 +66,7 @@ export const TeamItem = ({
         onExpand,
         expanded,
       }}
+      username={user!.username!}
     />
   );
 };
