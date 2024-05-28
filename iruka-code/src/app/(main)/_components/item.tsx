@@ -27,6 +27,7 @@ export interface ItemProps {
     | Id<'classes'>
     | Id<'leaderAccessDatetimes'>;
   teamIcon?: string;
+  teamId?: Id<'teams'>;
   active?: boolean;
   expanded?: boolean;
   isSearch?: boolean;

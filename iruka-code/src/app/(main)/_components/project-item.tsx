@@ -11,6 +11,7 @@ import { Item, ItemProps } from './item';
 export const ProjectItem = ({
   id,
   label,
+  teamId,
   onClick,
   icon: Icon,
   active,
@@ -21,6 +22,7 @@ export const ProjectItem = ({
 }: ItemProps) => {
   const router = useRouter();
   const archive = useMutation(api.projects.archive);
+  const create = useMutation(api.projects.create);
   const { user } = useUser();
 
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -38,12 +40,38 @@ export const ProjectItem = ({
     });
   };
 
+  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    if (!id) return;
+
+    const promise = create({
+      team_id: teamId as Id<'teams'>,
+      project_name: '空のプロジェクト',
+      class_name: '空のクラス',
+      max_participant_count: 3,
+      max_class_num: 1,
+    }).then((projectId) => {
+      if (!expanded) {
+        onExpand?.();
+      }
+
+      //   router.push(`/teams/${id}/projects/${projectId}`);
+    });
+
+    toast.promise(promise, {
+      loading: 'プロジェクトを作成中...',
+      success: 'プロジェクトを作成しました',
+      error: 'プロジェクトの作成に失敗しました',
+    });
+  };
+
   return (
     <Item
       {...{
         id,
         label,
         onClick,
+        onCreate,
         icon: Icon,
         active,
         isSearch,

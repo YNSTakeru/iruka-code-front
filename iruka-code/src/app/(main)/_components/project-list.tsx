@@ -65,6 +65,7 @@ export const ProjectList = ({ teamId, level = 1 }: ProjectListProps) => {
         <div key={project._id}>
           <ProjectItem
             id={project._id}
+            teamId={teamId}
             onClick={() => onRedirect(project._id)}
             label={project.project_name}
             icon={FileIcon}
