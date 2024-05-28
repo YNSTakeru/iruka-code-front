@@ -22,9 +22,25 @@ export const TeamItem = ({
 }: ItemProps) => {
   const router = useRouter();
   const { user } = useUser();
+  const archive = useMutation(api.teams.archive);
   const create = useMutation(api.projects.create);
 
   const maxParticipantCount = 3;
+
+  const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    if (!id || !user) return;
+
+    const promise = archive({
+      teamId: id as Id<'teams'>,
+    });
+
+    toast.promise(promise, {
+      loading: 'チームをゴミ箱に移動中...',
+      success: 'チームをゴミ箱に移動しました。',
+      error: 'チームをゴミ箱に移動することに失敗しました。',
+    });
+  };
 
   const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
@@ -67,6 +83,7 @@ export const TeamItem = ({
         expanded,
       }}
       username={user!.username!}
+      onArchive={onArchive}
     />
   );
 };
