@@ -32,6 +32,17 @@ export const archive = mutation({
       throw new Error('Unauthorized');
     }
 
+    const classes = await ctx.db
+      .query('classes')
+      .withIndex('by_project_id', (q) => q.eq('project_id', args.projectId))
+      .collect();
+
+    for (const _class of classes) {
+      await ctx.db.patch(_class._id, {
+        is_archived: true,
+      });
+    }
+
     const project = await ctx.db.patch(args.projectId, {
       is_archived: true,
     });
