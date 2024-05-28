@@ -3,7 +3,6 @@ import { mutation, query } from './_generated/server';
 
 export const archive = mutation({
   args: {
-    leaderId: v.id('leaderAccessDatetimes'),
     projectId: v.id('projects'),
   },
   handler: async (ctx, args) => {
@@ -15,13 +14,21 @@ export const archive = mutation({
 
     const userId = identity.subject;
 
-    const existingProject = await ctx.db.get(args.leaderId);
+    const existingProject = await ctx.db.get(args.projectId);
 
     if (!existingProject) {
       throw new Error('Project not found');
     }
 
-    if (existingProject.leader_id !== userId) {
+    const leaderAccessDatetimes = await ctx.db
+      .query('leaderAccessDatetimes')
+      .withIndex('by_project', (q) =>
+        q.eq('leader_id', userId).eq('project_id', args.projectId),
+      )
+      .order('desc')
+      .collect();
+
+    if (leaderAccessDatetimes.length === 0) {
       throw new Error('Unauthorized');
     }
 
@@ -47,6 +54,7 @@ export const getSidebar = query({
     const projects = await ctx.db
       .query('projects')
       .withIndex('by_team_id', (q) => q.eq('team_id', args.team_id!))
+      .filter((q) => q.eq(q.field('is_archived'), false))
       .order('desc')
       .collect();
 

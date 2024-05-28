@@ -33,7 +33,9 @@ export default defineSchema({
     leader_id: v.string(),
     project_id: v.id('projects'),
     access_date: v.optional(v.string()),
-  }).index('by_leader', ['leader_id']),
+  })
+    .index('by_leader', ['leader_id'])
+    .index('by_project', ['leader_id', 'project_id']),
 
   classes: defineTable({
     project_id: v.id('projects'),

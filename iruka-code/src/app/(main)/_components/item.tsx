@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { useUser } from '@clerk/clerk-react';
 import { Id } from '@convex/_generated/dataModel';
 import {
   ChevronDown,
@@ -22,7 +21,11 @@ import {
 import { useRouter } from 'next/navigation';
 
 export interface ItemProps {
-  id?: Id<'teams'> | Id<'projects'> | Id<'classes'>;
+  id?:
+    | Id<'teams'>
+    | Id<'projects'>
+    | Id<'classes'>
+    | Id<'leaderAccessDatetimes'>;
   teamIcon?: string;
   active?: boolean;
   expanded?: boolean;
@@ -32,8 +35,10 @@ export interface ItemProps {
   label: string;
   onClick: () => void;
   onCreate?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onArchive?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   icon: LucideIcon;
   isExpand?: boolean;
+  username?: string;
 }
 
 export const Item = ({
@@ -49,8 +54,9 @@ export const Item = ({
   expanded,
   onCreate,
   isExpand = true,
+  username,
+  onArchive,
 }: ItemProps) => {
-  const { user } = useUser();
   const router = useRouter();
 
   const handleExpand = (
@@ -111,13 +117,13 @@ export const Item = ({
                   side="right"
                   forceMount
                 >
-                  <DropdownMenuItem onClick={() => {}}>
+                  <DropdownMenuItem onClick={onArchive}>
                     <Trash className="h-4 w-4 mr-2" />
                     Delete
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <div className="text-xs text-muted-foreground p-2">
-                    最終更新者; {user?.username}
+                    最終更新者; {username}
                   </div>
                 </DropdownMenuContent>
               </div>
