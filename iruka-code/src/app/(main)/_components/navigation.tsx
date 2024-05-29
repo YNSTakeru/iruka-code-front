@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { useMediaQuery } from 'usehooks-ts';
 import { Item } from './item';
 import { TeamList } from './team-list';
+import { TrashBox } from './trash-box';
 import { UserItem } from './user-item';
 
 export const Navigation = () => {
@@ -168,7 +169,7 @@ export const Navigation = () => {
               className="p-0 w-72"
               side={isMobile ? 'bottom' : 'right'}
             >
-              <p>ゴミ箱</p>
+              <TrashBox />
             </PopoverContent>
           </Popover>
         </div>
