@@ -1,5 +1,6 @@
 'use client';
 
+import { ConfirmModal } from '@/components/modals/confirm-modal';
 import { Spinner } from '@/components/spinner';
 import { Input } from '@/components/ui/input';
 import { api } from '@convex/_generated/api';
@@ -41,11 +42,7 @@ export const TrashBox = () => {
     });
   };
 
-  const onRemove = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    teamId: Id<'teams'>,
-  ) => {
-    event.stopPropagation();
+  const onRemove = (teamId: Id<'teams'>) => {
     const promise = remove({ id: teamId });
 
     toast.promise(promise, {
@@ -98,12 +95,14 @@ export const TrashBox = () => {
               >
                 <Undo className="h-4 w-4 text-muted-foreground" />
               </div>
-              <div
-                role="button"
-                className="rounded-sm p-2 hover:bg-neutral-200"
-              >
-                <Trash className="h-4 w-4 text-muted-foreground" />
-              </div>
+              <ConfirmModal onConfirm={() => onRemove(team._id)}>
+                <div
+                  role="button"
+                  className="rounded-sm p-2 hover:bg-neutral-200"
+                >
+                  <Trash className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </ConfirmModal>
             </div>
           </div>
         ))}
