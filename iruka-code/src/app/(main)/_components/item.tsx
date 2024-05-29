@@ -34,7 +34,7 @@ export interface ItemProps {
   level?: number;
   onExpand?: () => void;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
   onCreate?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onArchive?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   icon: LucideIcon;

@@ -1,5 +1,10 @@
 'use client';
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
 import { useMutation } from 'convex/react';
@@ -10,6 +15,7 @@ import {
   PlusCircle,
   Search,
   Settings,
+  Trash,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
@@ -154,6 +160,17 @@ export const Navigation = () => {
         <div className="mt-4">
           <TeamList />
           <Item onClick={handleCreate} label="チームを追加" icon={Plus} />
+          <Popover>
+            <PopoverTrigger className="w-full mt-4">
+              <Item label="ゴミ箱" icon={Trash} />
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-0 w-72"
+              side={isMobile ? 'bottom' : 'right'}
+            >
+              <p>ゴミ箱</p>
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           onMouseDown={handleMouseDown}
