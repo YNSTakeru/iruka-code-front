@@ -6,6 +6,7 @@ import { useMutation } from 'convex/react';
 import {
   ChevronsLeft,
   MenuIcon,
+  Plus,
   PlusCircle,
   Search,
   Settings,
@@ -152,6 +153,7 @@ export const Navigation = () => {
         </div>
         <div className="mt-4">
           <TeamList />
+          <Item onClick={handleCreate} label="チームを追加" icon={Plus} />
         </div>
         <div
           onMouseDown={handleMouseDown}
