@@ -122,7 +122,7 @@ export const Item = ({
                     onClick={!!onArchive ? onArchive : () => {}}
                   >
                     <Trash className="h-4 w-4 mr-2" />
-                    Delete
+                    削除
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <div className="text-xs text-muted-foreground p-2">

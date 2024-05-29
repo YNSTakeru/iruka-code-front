@@ -82,6 +82,16 @@ export const TrashBox = () => {
         <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
           チームがゴミ箱にありません
         </p>
+        {filteredTeams?.map((team) => (
+          <div
+            key={team._id}
+            role="button"
+            onClick={() => onClick(team._id)}
+            className="text-sm rounded-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between"
+          >
+            <span>{team.title}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
