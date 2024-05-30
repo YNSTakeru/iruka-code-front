@@ -234,3 +234,40 @@ export const remove = mutation({
     return project;
   },
 });
+
+export const getSearch = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const leaderAccessDatetimes = await ctx.db
+      .query('leaderAccessDatetimes')
+      .withIndex('by_leader', (q) => q.eq('leader_id', userId))
+      .order('desc')
+      .collect();
+
+    const projects = await Promise.all(
+      leaderAccessDatetimes.map(({ project_id }) => ctx.db.get(project_id)),
+    );
+
+    if (projects.length === 0) return;
+
+    const filteredProjects = projects!.filter(
+      (project) => project!.is_archived === false,
+    );
+
+    const projectsTeamTitle = await Promise.all(
+      filteredProjects.map(async (project) => {
+        const team = await ctx.db.get(project!.team_id);
+        return { project, team_title: team!.title };
+      }),
+    );
+
+    return projectsTeamTitle;
+  },
+});

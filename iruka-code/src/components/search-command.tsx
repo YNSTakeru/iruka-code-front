@@ -20,6 +20,7 @@ export const SearchCommand = () => {
   const { user } = useUser();
   const router = useRouter();
   const teams = useQuery(api.teams.getSearch);
+  const projects = useQuery(api.projects.getSearch);
   const [isMounted, setIsMounted] = useState(false);
 
   const toggle = useSearch((store) => store.toggle);
@@ -42,7 +43,7 @@ export const SearchCommand = () => {
     return () => document.removeEventListener('keydown', down);
   }, [toggle]);
 
-  const onSelect = (id: string) => {
+  const onSelectTeam = (id: string) => {
     router.push(`/teams/${id}`);
     onClose();
   };
@@ -54,7 +55,7 @@ export const SearchCommand = () => {
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
       <CommandInput
-        placeholder={`${user?.username} さん、検索したいチーム名を入力してください`}
+        placeholder={`検索したいチーム、プロジェクト、クラスを入力してください`}
       />
       <CommandList>
         <CommandEmpty>検索にヒットしませんでした。</CommandEmpty>
@@ -64,7 +65,7 @@ export const SearchCommand = () => {
               key={team._id}
               value={`${team._id}-${team.title}`}
               title={team.title}
-              onSelect={onSelect}
+              onSelect={onSelectTeam}
             >
               {team.icon ? (
                 <p className="mr-2 text-[18px]">{team.icon}</p>
@@ -72,6 +73,24 @@ export const SearchCommand = () => {
                 <File className="mr-2 h-4 w-4" />
               )}
               <span>{team.title}</span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+        <CommandGroup heading="プロジェクト">
+          {projects?.map((obj) => (
+            <CommandItem
+              key={obj!.project?._id}
+              value={`${obj!.project!._id!}-${obj!.project!.project_name!}`}
+              title={obj!.project!.project_name!}
+              onSelect={onSelectTeam}
+            >
+              <div className="">
+                <div className="mb-2">{obj!.team_title}</div>
+                <div className="flex">
+                  <File className="mr-2 h-4 w-4" />
+                  <span>{obj.project?.project_name}</span>
+                </div>
+              </div>
             </CommandItem>
           ))}
         </CommandGroup>

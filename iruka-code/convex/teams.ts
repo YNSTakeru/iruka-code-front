@@ -236,6 +236,8 @@ export const getSearch = query({
       .order('desc')
       .collect();
 
+    const obj = { test: 'aaa', teams };
+
     return teams;
   },
 });
