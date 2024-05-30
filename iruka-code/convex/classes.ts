@@ -47,3 +47,5 @@ export const getSidebar = query({
     return classes;
   },
 });
+
+export const getTrash =

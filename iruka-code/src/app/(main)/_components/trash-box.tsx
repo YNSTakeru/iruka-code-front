@@ -17,6 +17,7 @@ export const TrashBox = () => {
   const params = useParams();
   const teams = useQuery(api.teams.getTrash);
   const projects = useQuery(api.projects.getTrash);
+  const _class = useQuery(api.classes.getTrash);
   const restoreTeam = useMutation(api.teams.restore);
   const restoreProject = useMutation(api.projects.restore);
   const removeTeam = useMutation(api.teams.remove);
@@ -211,6 +212,15 @@ export const TrashBox = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      <DropdownMenuSeparator />
+      <div className="mt-2 px-1 pb-1">
+        <p className="pl-2 font-bold">クラス</p>
+      </div>
+      {_class === undefined && (
+        <div className="h-full flex items-center justify-center p-4">
+          <Spinner size="lg" />
         </div>
       )}
     </div>
