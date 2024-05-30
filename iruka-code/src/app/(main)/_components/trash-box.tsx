@@ -15,12 +15,18 @@ import { toast } from 'sonner';
 export const TrashBox = () => {
   const router = useRouter();
   const params = useParams();
+
   const teams = useQuery(api.teams.getTrash);
   const projects = useQuery(api.projects.getTrash);
+  const teamTitleProjectNameClasses = useQuery(api.classes.getTrash);
+
   const restoreTeam = useMutation(api.teams.restore);
   const restoreProject = useMutation(api.projects.restore);
+  const restoreClass = useMutation(api.classes.restore);
+
   const removeTeam = useMutation(api.teams.remove);
   const removeProject = useMutation(api.projects.remove);
+  const removeClass = useMutation(api.classes.remove);
 
   const [search, setSearch] = useState('');
 
@@ -34,6 +40,16 @@ export const TrashBox = () => {
       .includes(search.toLowerCase());
   });
 
+  const filteredClasses = teamTitleProjectNameClasses?.filter(
+    (teamTitleProjectNameClass) => {
+      return teamTitleProjectNameClass.projectNameClass.classes.filter(
+        (cls) => {
+          return cls.class_name.toLowerCase().includes(search.toLowerCase());
+        },
+      );
+    },
+  );
+
   const onTeamClick = (teamId: string) => {
     router.push(`/teams/${teamId}`);
   };
@@ -46,6 +62,18 @@ export const TrashBox = () => {
     projectId: string;
   }) => {
     router.push(`/teams/${teamId}/projects/${projectId}`);
+  };
+
+  const onClassClick = ({
+    teamId,
+    projectId,
+    classId,
+  }: {
+    teamId: string;
+    projectId: string;
+    classId: string;
+  }) => {
+    router.push(`/teams/${teamId}/projects/${projectId}/classes/${classId}`);
   };
 
   const onTeamRestore = (
@@ -76,6 +104,20 @@ export const TrashBox = () => {
     });
   };
 
+  const onClassRestore = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    classId: Id<'classes'>,
+  ) => {
+    event.stopPropagation();
+    const promise = restoreClass({ id: classId });
+
+    toast.promise(promise, {
+      loading: 'クラスを復元中...',
+      success: 'クラスを復元しました。',
+      error: 'クラスを復元することに失敗しました。',
+    });
+  };
+
   const onTeamRemove = (teamId: Id<'teams'>) => {
     const promise = removeTeam({ id: teamId });
 
@@ -101,6 +143,22 @@ export const TrashBox = () => {
 
     if (params.projectId === projectId) {
       router.push(`teams/${params.teamId}/projects`);
+    }
+  };
+
+  const onClassRemove = (classId: Id<'classes'>) => {
+    const promise = removeClass({ id: classId });
+
+    toast.promise(promise, {
+      loading: 'プロジェクトを削除中...',
+      success: 'プロジェクトを削除しました。',
+      error: 'プロジェクトを削除することに失敗しました。',
+    });
+
+    if (params.classId === classId) {
+      router.push(
+        `teams/${params.teamId}/projects/${params.projectId}/classes`,
+      );
     }
   };
 
@@ -173,10 +231,9 @@ export const TrashBox = () => {
             プロジェクトがゴミ箱にありません
           </p>
           {filteredProjects?.map((project) => (
-            <div>
+            <div key={project.project!._id}>
               <div className="pl-2">{project.team_title}</div>
               <div
-                key={project.project!._id}
                 role="button"
                 onClick={() =>
                   onProjectClick({
@@ -211,6 +268,60 @@ export const TrashBox = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      <DropdownMenuSeparator />
+      <div className="mt-2 px-1 pb-1">
+        <p className="pl-2 font-bold">クラス</p>
+      </div>
+      {teamTitleProjectNameClasses === undefined && (
+        <div className="h-full flex items-center justify-center p-4">
+          <Spinner size="lg" />
+        </div>
+      )}
+      {teamTitleProjectNameClasses && (
+        <div className="mt-2 px-1 pb-1">
+          <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
+            クラスがゴミ箱にありません
+          </p>
+          {filteredClasses?.map((value) =>
+            value.projectNameClass.classes.map((cls) => (
+              <div key={cls._id}>
+                <div className="pl-2">{value.team_title}</div>
+                <div className="pl-4">{value.projectNameClass.projectName}</div>
+                <div
+                  role="button"
+                  onClick={() =>
+                    onClassClick({
+                      teamId: value!.projectNameClass!.team_id!,
+                      projectId: cls.project_id,
+                      classId: cls._id,
+                    })
+                  }
+                  className="text-sm rounded-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between"
+                >
+                  <span className="truncate pl-6">{cls.class_name}</span>
+                  <div className="flex items-center">
+                    <div
+                      onClick={(e) => onClassRestore(e, cls!._id)}
+                      role="button"
+                      className="rounded-sm p-2 hover:bg-neutral-200"
+                    >
+                      <Undo className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <ConfirmModal onConfirm={() => onClassRemove(cls!._id)}>
+                      <div
+                        role="button"
+                        className="rounded-sm p-2 hover:bg-neutral-200"
+                      >
+                        <Trash className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    </ConfirmModal>
+                  </div>
+                </div>
+              </div>
+            )),
+          )}
         </div>
       )}
     </div>
