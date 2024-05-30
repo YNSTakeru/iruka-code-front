@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { useSearch } from '@/hooks/use-search';
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
 import { useMutation } from 'convex/react';
@@ -27,6 +28,7 @@ import { TrashBox } from './trash-box';
 import { UserItem } from './user-item';
 
 export const Navigation = () => {
+  const search = useSearch();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const create = useMutation(api.teams.create);
@@ -150,7 +152,7 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          <Item label="検索" icon={Search} isSearch onClick={() => {}} />
+          <Item label="検索" icon={Search} isSearch onClick={search.onOpen} />
           <Item label="設定" icon={Settings} onClick={() => {}} />
           <Item
             onClick={handleCreate}
