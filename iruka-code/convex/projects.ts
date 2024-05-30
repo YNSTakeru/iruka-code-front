@@ -117,3 +117,120 @@ export const create = mutation({
     return project;
   },
 });
+
+export const getTrash = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const leaderAccessDatetimes = await ctx.db
+      .query('leaderAccessDatetimes')
+      .withIndex('by_leader', (q) => q.eq('leader_id', userId))
+      .order('desc')
+      .collect();
+
+    const projects = await Promise.all(
+      leaderAccessDatetimes.map(({ project_id }) => ctx.db.get(project_id)),
+    );
+
+    if (projects.length === 0) return;
+
+    const filteredProjects = projects!.filter(
+      (project) => project!.is_archived === true,
+    );
+
+    const projectsTeamTitle = await Promise.all(
+      filteredProjects.map(async (project) => {
+        const team = await ctx.db.get(project!.team_id);
+        return { project, team_title: team!.title };
+      }),
+    );
+
+    return projectsTeamTitle;
+  },
+});
+
+export const restore = mutation({
+  args: { id: v.id('projects') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const project = await ctx.db.get(args.id);
+
+    if (!project) return;
+
+    const classes = await ctx.db
+      .query('classes')
+      .withIndex('by_project_id', (q) => q.eq('project_id', project._id))
+      .collect();
+
+    for (const _class of classes) {
+      await ctx.db.patch(_class._id, {
+        is_archived: false,
+      });
+    }
+
+    await ctx.db.patch(project._id, {
+      is_archived: false,
+    });
+
+    return project;
+  },
+});
+
+export const remove = mutation({
+  args: { id: v.id('projects') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const existingProject = await ctx.db.get(args.id);
+
+    if (!existingProject) {
+      throw new Error('Project not found');
+    }
+
+    const leaderAccessDatetimes = await ctx.db
+      .query('leaderAccessDatetimes')
+      .withIndex('by_project', (q) =>
+        q.eq('leader_id', userId).eq('project_id', args.id),
+      )
+      .order('desc')
+      .collect();
+
+    if (leaderAccessDatetimes.length === 0) {
+      throw new Error('Unauthorized');
+    }
+
+    const classes = await ctx.db
+      .query('classes')
+      .withIndex('by_project_id', (q) =>
+        q.eq('project_id', existingProject._id),
+      )
+      .collect();
+
+    for (const _class of classes) {
+      await ctx.db.delete(_class._id);
+    }
+
+    const project = await ctx.db.delete(existingProject._id);
+
+    return project;
+  },
+});

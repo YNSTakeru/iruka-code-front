@@ -12,8 +12,6 @@ export const archive = mutation({
       throw new Error('Not authenticated');
     }
 
-    const userId = identity.subject;
-
     const existgingClass = await ctx.db.get(args.classId);
 
     if (!existgingClass) {
@@ -23,18 +21,6 @@ export const archive = mutation({
     const _class = await ctx.db.patch(args.classId, {
       is_archived: true,
     });
-
-    const leaderAccessDatetimes = await ctx.db
-      .query('leaderAccessDatetimes')
-      .withIndex('by_project', (q) =>
-        q.eq('leader_id', userId).eq('project_id', existgingClass.project_id),
-      )
-      .order('desc')
-      .collect();
-
-    if (leaderAccessDatetimes.length === 0) {
-      throw new Error('Unauthorized');
-    }
 
     return _class;
   },
