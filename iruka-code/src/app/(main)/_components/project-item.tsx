@@ -11,7 +11,6 @@ import { Item, ItemProps } from './item';
 export const ProjectItem = ({
   id,
   label,
-  teamId,
   onClick,
   icon: Icon,
   active,
@@ -22,7 +21,7 @@ export const ProjectItem = ({
 }: ItemProps) => {
   const router = useRouter();
   const archive = useMutation(api.projects.archive);
-  const create = useMutation(api.projects.create);
+  const create = useMutation(api.classes.create);
   const { user } = useUser();
 
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -45,11 +44,9 @@ export const ProjectItem = ({
     if (!id) return;
 
     const promise = create({
-      team_id: teamId as Id<'teams'>,
-      project_name: '空のプロジェクト',
+      project_id: id as Id<'projects'>,
       class_name: '空のクラス',
       max_participant_count: 3,
-      max_class_num: 1,
     }).then((projectId) => {
       if (!expanded) {
         onExpand?.();
@@ -59,9 +56,9 @@ export const ProjectItem = ({
     });
 
     toast.promise(promise, {
-      loading: 'プロジェクトを作成中...',
-      success: 'プロジェクトを作成しました',
-      error: 'プロジェクトの作成に失敗しました',
+      loading: 'クラスを作成中...',
+      success: 'クラスを作成しました',
+      error: 'クラスの作成に失敗しました',
     });
   };
 

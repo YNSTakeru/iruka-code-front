@@ -48,6 +48,40 @@ export const getSidebar = query({
   },
 });
 
+export const create = mutation({
+  args: {
+    project_id: v.id('projects'),
+    class_name: v.string(),
+    max_participant_count: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const _class = await ctx.db.insert('classes', {
+      project_id: args.project_id,
+      class_name: args.class_name,
+      max_participant_count: args.max_participant_count,
+      is_open: true,
+      is_archived: false,
+      delete_flg: false,
+    });
+
+    const project = await ctx.db.get(args.project_id);
+
+    await ctx.db.patch(args.project_id, {
+      max_class_num: project!.max_class_num + args.max_participant_count,
+    });
+
+    return _class;
+  },
+});
+
 export const getTrash = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();

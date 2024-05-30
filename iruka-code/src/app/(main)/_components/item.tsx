@@ -28,6 +28,7 @@ export interface ItemProps {
     | Id<'leaderAccessDatetimes'>;
   teamIcon?: string;
   teamId?: Id<'teams'>;
+  projectId?: Id<'projects'>;
   active?: boolean;
   expanded?: boolean;
   isSearch?: boolean;
