@@ -200,14 +200,14 @@ export const TrashBox = () => {
               <div
                 onClick={(e) => onTeamRestore(e, team._id)}
                 role="button"
-                className="rounded-sm p-2 hover:bg-neutral-200"
+                className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600 "
               >
                 <Undo className="h-4 w-4 text-muted-foreground" />
               </div>
               <ConfirmModal onConfirm={() => onTeamRemove(team._id)}>
                 <div
                   role="button"
-                  className="rounded-sm p-2 hover:bg-neutral-200"
+                  className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                 >
                   <Trash className="h-4 w-4 text-muted-foreground" />
                 </div>
@@ -250,7 +250,7 @@ export const TrashBox = () => {
                   <div
                     onClick={(e) => onProjectRestore(e, project!.project!._id)}
                     role="button"
-                    className="rounded-sm p-2 hover:bg-neutral-200"
+                    className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                   >
                     <Undo className="h-4 w-4 text-muted-foreground" />
                   </div>
@@ -259,7 +259,7 @@ export const TrashBox = () => {
                   >
                     <div
                       role="button"
-                      className="rounded-sm p-2 hover:bg-neutral-200"
+                      className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                     >
                       <Trash className="h-4 w-4 text-muted-foreground" />
                     </div>
@@ -305,14 +305,14 @@ export const TrashBox = () => {
                     <div
                       onClick={(e) => onClassRestore(e, cls!._id)}
                       role="button"
-                      className="rounded-sm p-2 hover:bg-neutral-200"
+                      className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                     >
                       <Undo className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <ConfirmModal onConfirm={() => onClassRemove(cls!._id)}>
                       <div
                         role="button"
-                        className="rounded-sm p-2 hover:bg-neutral-200"
+                        className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                       >
                         <Trash className="h-4 w-4 text-muted-foreground" />
                       </div>
