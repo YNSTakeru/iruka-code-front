@@ -21,6 +21,7 @@ export const SearchCommand = () => {
   const router = useRouter();
   const teams = useQuery(api.teams.getSearch);
   const projects = useQuery(api.projects.getSearch);
+  const classes = useQuery(api.classes.getSearch);
   const [isMounted, setIsMounted] = useState(false);
 
   const toggle = useSearch((store) => store.toggle);
@@ -45,6 +46,12 @@ export const SearchCommand = () => {
 
   const onSelectTeam = (id: string) => {
     router.push(`/teams/${id}`);
+    onClose();
+  };
+
+  const onSelectProject = (id: string) => {
+    // router.push(`teams/${teamId}/projects/${id}`);
+    console.log(id);
     onClose();
   };
 
@@ -82,17 +89,40 @@ export const SearchCommand = () => {
               key={obj!.project?._id}
               value={`${obj!.project!._id!}-${obj!.project!.project_name!}`}
               title={obj!.project!.project_name!}
-              onSelect={onSelectTeam}
+              onSelect={onSelectProject}
             >
               <div className="">
                 <div className="mb-2">{obj!.team_title}</div>
-                <div className="flex">
+                <div className="flex ml-2">
                   <File className="mr-2 h-4 w-4" />
                   <span>{obj.project?.project_name}</span>
                 </div>
               </div>
             </CommandItem>
           ))}
+        </CommandGroup>
+        <CommandGroup heading="クラス">
+          {classes?.map((obj) =>
+            obj.projectNameClass.classes.map((cls) => (
+              <CommandItem
+                key={cls!._id}
+                value={`${cls._id}-${cls.class_name}`}
+                title={cls.class_name}
+                onSelect={onSelectProject}
+              >
+                <div className="">
+                  <div className="mb-2">{obj!.team_title}</div>
+                  <div className="mb-2 ml-2">
+                    {obj!.projectNameClass.projectName}
+                  </div>
+                  <div className="flex ml-4">
+                    <File className="mr-2 h-4 w-4" />
+                    <span>{cls.class_name}</span>
+                  </div>
+                </div>
+              </CommandItem>
+            )),
+          )}
         </CommandGroup>
       </CommandList>
     </CommandDialog>
