@@ -12,7 +12,7 @@ export const SettingsModal = () => {
     <Dialog open={settings.isOpen} onOpenChange={settings.onClose}>
       <DialogContent>
         <DialogHeader className="border-b pb-3">
-          <h2 className="text-lg font-medium">ユーザー設定</h2>
+          <h2 className="text-lg font-medium">モード設定</h2>
         </DialogHeader>
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-1">
