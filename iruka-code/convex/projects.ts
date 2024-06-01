@@ -271,3 +271,91 @@ export const getSearch = query({
     return projectsTeamTitle;
   },
 });
+
+export const getById = query({
+  args: { projectId: v.id('projects') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    const project = await ctx.db.get(args.projectId);
+
+    if (!project) {
+      throw new Error('Project not found');
+    }
+
+    if (project.is_open && !project.is_archived) {
+      return project;
+    }
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const leaderAccessDatetimes = await ctx.db
+      .query('leaderAccessDatetimes')
+      .withIndex('by_project', (q) =>
+        q.eq('leader_id', userId).eq('project_id', args.projectId),
+      )
+      .order('desc')
+      .collect();
+
+    if (leaderAccessDatetimes[0].leader_id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    return project;
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id('projects'),
+    team_id: v.id('teams'),
+    project_name: v.string(),
+    start_timestamp: v.optional(v.string()),
+    end_timestamp: v.optional(v.string()),
+    is_open: v.boolean(),
+    is_archived: v.boolean(),
+    description: v.optional(v.string()),
+    max_participant_count: v.number(),
+    max_class_num: v.number(),
+    icon: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const { id, ...rest } = args;
+
+    const existingProject = await ctx.db.get(args.id);
+
+    if (!existingProject) {
+      throw new Error('Project not found');
+    }
+
+    const existingLeaderAccessDatetimes = await ctx.db
+      .query('leaderAccessDatetimes')
+      .withIndex('by_project', (q) =>
+        q.eq('leader_id', userId).eq('project_id', args.id),
+      )
+      .order('desc')
+      .collect();
+
+    if (existingLeaderAccessDatetimes[0].leader_id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const project = await ctx.db.patch(args.id, {
+      ...rest,
+    });
+
+    return project;
+  },
+});

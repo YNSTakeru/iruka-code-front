@@ -243,3 +243,74 @@ export const getSearch = query({
     return teamTitleProjectNameClasses;
   },
 });
+
+export const getById = query({
+  args: {
+    classId: v.id('classes'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    const _class = await ctx.db.get(args.classId);
+
+    if (!_class) {
+      throw new Error('Class not found');
+    }
+
+    if (_class.is_open && !_class.is_archived) {
+      return _class;
+    }
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    return _class;
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id('classes'),
+    project_id: v.id('projects'),
+    class_name: v.string(),
+    start_timestamp: v.optional(v.string()),
+    end_timestamp: v.optional(v.string()),
+    is_open: v.boolean(),
+    is_archived: v.boolean(),
+    max_participant_count: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const { id, ...rest } = args;
+
+    const existingClass = await ctx.db.get(args.id);
+
+    if (!existingClass) {
+      throw new Error('Class not found');
+    }
+
+    const existingLeaderAccessDatetimes = await ctx.db
+      .query('leaderAccessDatetimes')
+      .withIndex('by_project', (q) =>
+        q.eq('leader_id', userId).eq('project_id', args.project_id),
+      )
+      .order('desc')
+      .collect();
+
+    if (existingLeaderAccessDatetimes[0].leader_id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const _class = await ctx.db.patch(args.id, { ...rest });
+
+    return _class;
+  },
+});
