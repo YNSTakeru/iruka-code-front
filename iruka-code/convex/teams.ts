@@ -241,3 +241,32 @@ export const getSearch = query({
     return teams;
   },
 });
+
+export const getById = query({
+  args: { teamId: v.id('teams') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    const team = await ctx.db.get(args.teamId);
+
+    if (!team) {
+      throw new Error('Team not found');
+    }
+
+    if (team.isPublished && !team.is_archived) {
+      return team;
+    }
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    if (team.userId !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    return team;
+  },
+});

@@ -19,11 +19,12 @@ import {
   Settings,
   Trash,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useMediaQuery } from 'usehooks-ts';
 import { Item } from './item';
+import { Navbar } from './navbar';
 import { TeamList } from './team-list';
 import { TrashBox } from './trash-box';
 import { UserItem } from './user-item';
@@ -31,6 +32,7 @@ import { UserItem } from './user-item';
 export const Navigation = () => {
   const settings = useSettings();
   const search = useSearch();
+  const params = useParams();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const create = useMutation(api.teams.create);
@@ -100,6 +102,7 @@ export const Navigation = () => {
         'width',
         isMobile ? '0' : 'calc(100% - 240px)',
       );
+      navbarRef.current.style.setProperty('left', isMobile ? '100%' : '240px');
 
       setTimeout(() => {
         setIsResetting(false);
@@ -191,15 +194,19 @@ export const Navigation = () => {
           isMobile && 'left-0 w-full',
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
-          {isCollapsed && (
-            <MenuIcon
-              role="button"
-              className="h-6 w-6 text-muted-foreground"
-              onClick={resetWidth}
-            />
-          )}
-        </nav>
+        {!!params.teamId ? (
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full">
+            {isCollapsed && (
+              <MenuIcon
+                role="button"
+                className="h-6 w-6 text-muted-foreground"
+                onClick={resetWidth}
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );
