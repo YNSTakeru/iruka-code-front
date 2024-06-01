@@ -270,3 +270,41 @@ export const getById = query({
     return team;
   },
 });
+
+export const update = mutation({
+  args: {
+    id: v.id('teams'),
+    title: v.optional(v.string()),
+    content: v.optional(v.string()),
+    coverImage: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    isPublished: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+
+    const userId = identity.subject;
+
+    const { id, ...rest } = args;
+
+    const existingTeam = await ctx.db.get(args.id);
+
+    if (!existingTeam) {
+      throw new Error('Team not found');
+    }
+
+    if (existingTeam.userId !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const team = await ctx.db.patch(args.id, {
+      ...rest,
+    });
+
+    return team;
+  },
+});
