@@ -3,24 +3,25 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { api } from '@convex/_generated/api';
 import { Doc } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { useRef, useState } from 'react';
 
-interface TitleProps {
-  initialData: Doc<'teams'>;
+export interface TitleProps {
+  initialData: Doc<'teams'> | Doc<'projects'>;
+  value: string;
+  update: ReturnType<typeof useMutation>;
+  category: string;
 }
 
-export const Title = ({ initialData }: TitleProps) => {
+export const Title = ({ initialData, value, update, category }: TitleProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const update = useMutation(api.teams.update);
 
-  const [title, setTitle] = useState(initialData.title || '未タイトル');
+  const [title, setTitle] = useState(value || '未タイトル');
   const [isEditing, setIsEditing] = useState(false);
 
   const enableInput = () => {
-    setTitle(initialData.title);
+    setTitle(value);
     setIsEditing(true);
     setTimeout(() => {
       inputRef.current?.focus();
@@ -34,10 +35,29 @@ export const Title = ({ initialData }: TitleProps) => {
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    update({
-      id: initialData._id,
-      title: event.target.value || '未タイトル',
-    });
+
+    switch (category) {
+      case 'team':
+        update({
+          id: initialData._id,
+          title: event.target.value || '未タイトル',
+        });
+        break;
+      case 'project':
+        const thisInitialData = initialData as Doc<'projects'>;
+        update({
+          id: initialData._id,
+          team_id: thisInitialData.team_id,
+          project_name: event.target.value || '無名のプロジェクト',
+          is_archived: initialData.is_archived!,
+          is_open: thisInitialData.is_open,
+          max_participant_count: thisInitialData.max_participant_count,
+          max_class_num: thisInitialData.max_class_num,
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -66,7 +86,7 @@ export const Title = ({ initialData }: TitleProps) => {
           size="sm"
           className="font-normal h-auto p-1"
         >
-          <span className="truncate">{initialData?.title}</span>
+          <span className="truncate">{value}</span>
         </Button>
       )}
     </div>

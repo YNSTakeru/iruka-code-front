@@ -5,6 +5,8 @@ import { Id } from '@convex/_generated/dataModel';
 import { useQuery } from 'convex/react';
 import { MenuIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { ProjectTitle } from './project-title';
+import { TeamTitle } from './team-tilte';
 import { Title } from './title';
 
 interface NavbarProps {
@@ -18,6 +20,14 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
   const team = useQuery(api.teams.getById, {
     teamId: params.teamId as Id<'teams'>,
   });
+
+  const projectQueryOptions = params.projectId
+    ? {
+        projectId: params.projectId as Id<'projects'>,
+      }
+    : undefined;
+
+  const project = useQuery(api.projects.getById, projectQueryOptions || 'skip');
 
   if (team === undefined) {
     return (
@@ -40,8 +50,10 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
           className="h-6 w-6 text-muted-foreground"
         />
       )}
-      <div className="flex items-center justify-between wf-ull">
-        <Title initialData={team} />
+      <div className="flex  items-center justify-between wf-ull">
+        <TeamTitle initialData={team} />
+        <div className="mx-2">{'>'}</div>
+        {project && <ProjectTitle initialData={project} />}
       </div>
     </nav>
   );

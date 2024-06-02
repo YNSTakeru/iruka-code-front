@@ -273,8 +273,12 @@ export const getSearch = query({
 });
 
 export const getById = query({
-  args: { projectId: v.id('projects') },
+  args: { projectId: v.optional(v.id('projects')) },
   handler: async (ctx, args) => {
+    if (!args.projectId) {
+      return;
+    }
+
     const identity = await ctx.auth.getUserIdentity();
 
     const project = await ctx.db.get(args.projectId);
@@ -296,7 +300,7 @@ export const getById = query({
     const leaderAccessDatetimes = await ctx.db
       .query('leaderAccessDatetimes')
       .withIndex('by_project', (q) =>
-        q.eq('leader_id', userId).eq('project_id', args.projectId),
+        q.eq('leader_id', userId).eq('project_id', args!.projectId!),
       )
       .order('desc')
       .collect();
