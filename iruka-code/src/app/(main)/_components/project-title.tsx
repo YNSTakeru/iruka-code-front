@@ -4,19 +4,18 @@ import { useMutation } from 'convex/react';
 import { Title } from './title';
 
 interface TitleProps {
-  initialData: Doc<'teams'>;
+  initialData: Doc<'projects'>;
 }
 
-export const TeamTitle = ({ initialData }: TitleProps) => {
-  const update = useMutation(api.teams.update);
-  const { title } = initialData;
-
+export const ProjectTitle = ({ initialData }: TitleProps) => {
+  const update = useMutation(api.projects.update);
+  const { project_name } = initialData;
   return (
     <Title
       initialData={initialData}
-      value={title}
+      value={project_name}
       update={update}
-      category="team"
+      category={'project'}
     />
   );
 };
