@@ -3,24 +3,26 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { api } from '@convex/_generated/api';
-import { Doc } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { useRef, useState } from 'react';
 
-interface TitleProps {
-  initialData: Doc<'teams'>;
+export interface TitleProps {
+  initialData: {
+    _id: string;
+    value: string;
+    icon?: string;
+  };
+  update: ReturnType<typeof useMutation>;
 }
 
-export const Title = ({ initialData }: TitleProps) => {
+export const Title = ({ initialData, update }: TitleProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const update = useMutation(api.teams.update);
 
-  const [title, setTitle] = useState(initialData.title || '未タイトル');
+  const [title, setTitle] = useState(initialData.value || '未タイトル');
   const [isEditing, setIsEditing] = useState(false);
 
   const enableInput = () => {
-    setTitle(initialData.title);
+    setTitle(initialData.value);
     setIsEditing(true);
     setTimeout(() => {
       inputRef.current?.focus();
@@ -66,7 +68,7 @@ export const Title = ({ initialData }: TitleProps) => {
           size="sm"
           className="font-normal h-auto p-1"
         >
-          <span className="truncate">{initialData?.title}</span>
+          <span className="truncate">{initialData?.value}</span>
         </Button>
       )}
     </div>
