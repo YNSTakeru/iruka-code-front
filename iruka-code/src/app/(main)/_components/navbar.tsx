@@ -5,6 +5,7 @@ import { Id } from '@convex/_generated/dataModel';
 import { useQuery } from 'convex/react';
 import { MenuIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { ClassTitle } from './class-title';
 import { ProjectTitle } from './project-title';
 import { TeamTitle } from './team-tilte';
 import { Title } from './title';
@@ -29,6 +30,12 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
 
   const project = useQuery(api.projects.getById, projectQueryOptions || 'skip');
 
+  const classQueryOptions = params.classId
+    ? { classId: params.classId as Id<'classes'> }
+    : undefined;
+
+  const _class = useQuery(api.classes.getById, classQueryOptions || 'skip');
+
   if (team === undefined) {
     return (
       <nav className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center">
@@ -52,8 +59,18 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
       )}
       <div className="flex  items-center justify-between wf-ull">
         <TeamTitle initialData={team} />
-        <div className="mx-2">{'>'}</div>
-        {project && <ProjectTitle initialData={project} />}
+        {project && (
+          <>
+            <div className="mx-2">{'>'}</div>
+            <ProjectTitle initialData={project} />
+          </>
+        )}
+        {_class && (
+          <>
+            <div className="mx-2">{'>'}</div>
+            <ClassTitle initialData={_class} />
+          </>
+        )}
       </div>
     </nav>
   );
