@@ -5,6 +5,7 @@ import { Id } from '@convex/_generated/dataModel';
 import { useQuery } from 'convex/react';
 import { MenuIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { ClassBanner } from './class-banner';
 import { ClassTitle } from './class-title';
 import { ProjectBanner } from './project-banner';
 import { ProjectTitle } from './project-title';
@@ -80,6 +81,7 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
       {project && project.is_archived && (
         <ProjectBanner projectId={project._id} />
       )}
+      {_class && _class.is_archived && <ClassBanner classId={_class._id} />}
     </>
   );
 };
