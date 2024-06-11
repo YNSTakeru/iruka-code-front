@@ -5,9 +5,9 @@ import { Id } from '@convex/_generated/dataModel';
 import { useQuery } from 'convex/react';
 import { MenuIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { Banner } from './banner';
 import { ClassTitle } from './class-title';
 import { ProjectTitle } from './project-title';
+import { TeamBanner } from './team-banner';
 import { TeamTitle } from './team-tilte';
 import { Title } from './title';
 
@@ -75,7 +75,7 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
           )}
         </div>
       </nav>
-      {team.is_archived && <Banner teamId={team._id} />}
+      {team.is_archived && <TeamBanner teamId={team._id} />}
     </>
   );
 };
