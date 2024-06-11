@@ -6,6 +6,7 @@ import { useQuery } from 'convex/react';
 import { MenuIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { ClassTitle } from './class-title';
+import { ProjectBanner } from './project-banner';
 import { ProjectTitle } from './project-title';
 import { TeamBanner } from './team-banner';
 import { TeamTitle } from './team-tilte';
@@ -76,6 +77,9 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
         </div>
       </nav>
       {team.is_archived && <TeamBanner teamId={team._id} />}
+      {project && project.is_archived && (
+        <ProjectBanner projectId={project._id} />
+      )}
     </>
   );
 };

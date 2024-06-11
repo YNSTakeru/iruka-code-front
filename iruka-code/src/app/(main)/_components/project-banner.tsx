@@ -1,22 +1,23 @@
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Banner } from './banner';
 
 interface BannerProps {
-  teamId: Id<'teams'>;
+  projectId: Id<'projects'>;
 }
 
-export const TeamBanner = ({ teamId }: BannerProps) => {
+export const ProjectBanner = ({ projectId }: BannerProps) => {
   const router = useRouter();
+  const params = useParams();
 
-  const remove = useMutation(api.teams.remove);
-  const restore = useMutation(api.teams.restore);
+  const remove = useMutation(api.projects.remove);
+  const restore = useMutation(api.projects.restore);
 
   const onRemove = () => {
-    const promise = remove({ id: teamId });
+    const promise = remove({ id: projectId });
 
     toast.promise(promise, {
       loading: '削除中...',
@@ -24,11 +25,11 @@ export const TeamBanner = ({ teamId }: BannerProps) => {
       error: '削除に失敗しました',
     });
 
-    router.push('/teams');
+    router.push(`/teams/${params.teamId}/projects`);
   };
 
   const onRestore = () => {
-    const promise = restore({ id: teamId });
+    const promise = restore({ id: projectId });
 
     toast.promise(promise, {
       loading: '復元中...',
@@ -38,6 +39,6 @@ export const TeamBanner = ({ teamId }: BannerProps) => {
   };
 
   return (
-    <Banner onRemove={onRemove} onRestore={onRestore} typeStr={'チーム'} />
+    <Banner onRemove={onRemove} onRestore={onRestore} typeStr="プロジェクト" />
   );
 };

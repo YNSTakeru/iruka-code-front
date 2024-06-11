@@ -6,9 +6,14 @@ import { Button } from '@/components/ui/button';
 interface BannerProps {
   onRemove: () => void;
   onRestore: () => void;
+  typeStr?: string;
 }
 
-export const Banner = ({ onRemove, onRestore }: BannerProps) => {
+export const Banner = ({
+  onRemove,
+  onRestore,
+  typeStr = 'チーム',
+}: BannerProps) => {
   return (
     <div className="w-full bg-rose-500 text-center text-sm p-2 text-white flex items-center gap-x-2 justify-center">
       <p>このページはゴミ箱です。</p>
@@ -18,7 +23,7 @@ export const Banner = ({ onRemove, onRestore }: BannerProps) => {
         variant="outline"
         className="bborder-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal"
       >
-        チームを復元
+        {typeStr}を復元
       </Button>
       <ConfirmModal onConfirm={onRemove}>
         <Button

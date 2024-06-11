@@ -228,6 +228,9 @@ export const remove = mutation({
     for (const _class of classes) {
       await ctx.db.delete(_class._id);
     }
+    const leaderAccessDatetime = await ctx.db.delete(
+      leaderAccessDatetimes[0]._id,
+    );
 
     const project = await ctx.db.delete(existingProject._id);
 
