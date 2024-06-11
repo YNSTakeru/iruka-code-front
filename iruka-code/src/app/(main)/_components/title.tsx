@@ -8,7 +8,7 @@ import { useMutation } from 'convex/react';
 import { useRef, useState } from 'react';
 
 export interface TitleProps {
-  initialData: Doc<'teams'> | Doc<'projects'>;
+  initialData: Doc<'teams'> | Doc<'projects'> | Doc<'classes'>;
   value: string;
   update: ReturnType<typeof useMutation>;
   category: string;
@@ -55,6 +55,17 @@ export const Title = ({ initialData, value, update, category }: TitleProps) => {
           max_class_num: thisInitialData.max_class_num,
         });
         break;
+      case 'class':
+        const thisInitialDataClass = initialData as Doc<'classes'>;
+        update({
+          id: thisInitialDataClass._id,
+          project_id: thisInitialDataClass.project_id,
+          class_name: event.target.value || '無名のクラス',
+          is_open: thisInitialDataClass.is_open,
+          is_archived: thisInitialDataClass.is_archived,
+          max_participant_count: thisInitialDataClass.max_participant_count,
+        });
+        break;
       default:
         break;
     }
@@ -68,7 +79,7 @@ export const Title = ({ initialData, value, update, category }: TitleProps) => {
 
   return (
     <div className="flex items-center gap-x-1">
-      {!!initialData.icon && <p>{initialData.icon}</p>}
+      {initialData && 'icon' in initialData && <p>{initialData.icon}</p>}
       {isEditing ? (
         <Input
           ref={inputRef}
