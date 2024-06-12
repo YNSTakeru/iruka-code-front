@@ -7,6 +7,7 @@ import { MenuIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { ClassBanner } from './class-banner';
 import { ClassTitle } from './class-title';
+import { Menu } from './menu';
 import { ProjectBanner } from './project-banner';
 import { ProjectTitle } from './project-title';
 import { TeamBanner } from './team-banner';
@@ -43,6 +44,9 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
     return (
       <nav className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center">
         <Title.Skeleton />
+        <div className="flex items-center gap-x-2">
+          <Menu.Skeleton />
+        </div>
       </nav>
     );
   }
@@ -53,7 +57,7 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
 
   return (
     <>
-      <nav className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center gap-x-4">
+      <nav className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center gap-x-4 ">
         {isCollapsed && (
           <MenuIcon
             role="button"
@@ -61,8 +65,11 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
             className="h-6 w-6 text-muted-foreground"
           />
         )}
-        <div className="flex  items-center justify-between wf-ull">
+        <div className="flex items-center justify-between w-full">
           <TeamTitle initialData={team} />
+          <div className="flex items-center gap-x-2">
+            <Menu teamId={team._id} />
+          </div>
           {project && (
             <>
               <div className="mx-2">{'>'}</div>
