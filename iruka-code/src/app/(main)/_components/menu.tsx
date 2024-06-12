@@ -29,6 +29,7 @@ export const Menu = ({ teamId, projectId, classId }: MenuProps) => {
 
   const teamArchive = useMutation(api.teams.archive);
   const projectArchive = useMutation(api.projects.archive);
+  const classArchive = useMutation(api.classes.archive);
 
   const onTeamArchive = () => {
     const promise = teamArchive({ teamId: teamId });
@@ -54,6 +55,18 @@ export const Menu = ({ teamId, projectId, classId }: MenuProps) => {
     router.push(`/teams/${teamId}/projects`);
   };
 
+  const onClassArchive = () => {
+    const promise = classArchive({ classId: classId! });
+
+    toast.promise(promise, {
+      loading: 'クラスをゴミ箱へ移動中...',
+      success: 'クラスをゴミ箱へ移動しました',
+      error: 'クラスをゴミ箱へ移動できませんでした',
+    });
+
+    router.push(`/teams/${teamId}/projects/${projectId}`);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -75,6 +88,12 @@ export const Menu = ({ teamId, projectId, classId }: MenuProps) => {
           <DropdownMenuItem onClick={onProjectArchive}>
             <Trash className="h-4 w-4 mr-2" />
             プロジェクトをゴミ箱へ移動
+          </DropdownMenuItem>
+        )}
+        {classId && (
+          <DropdownMenuItem onClick={onClassArchive}>
+            <Trash className="h-4 w-4 mr-2" />
+            クラスをゴミ箱へ移動
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
