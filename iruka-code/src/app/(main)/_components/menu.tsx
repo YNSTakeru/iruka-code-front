@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@clerk/clerk-react';
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
@@ -62,4 +63,8 @@ export const Menu = ({ teamId }: MenuProps) => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+};
+
+Menu.Skeleton = function MenuSkeleton() {
+  return <Skeleton className="h-10 w-10" />;
 };
