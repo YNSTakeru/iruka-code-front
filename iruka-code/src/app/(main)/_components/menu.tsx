@@ -19,24 +19,39 @@ import { toast } from 'sonner';
 
 interface MenuProps {
   teamId: Id<'teams'>;
+  projectId?: Id<'projects'>;
+  classId?: Id<'classes'>;
 }
 
-export const Menu = ({ teamId }: MenuProps) => {
+export const Menu = ({ teamId, projectId, classId }: MenuProps) => {
   const router = useRouter();
   const { user } = useUser();
 
-  const archive = useMutation(api.teams.archive);
+  const teamArchive = useMutation(api.teams.archive);
+  const projectArchive = useMutation(api.projects.archive);
 
-  const onArchive = () => {
-    const promise = archive({ teamId: teamId });
+  const onTeamArchive = () => {
+    const promise = teamArchive({ teamId: teamId });
 
     toast.promise(promise, {
-      loading: 'ゴミ箱へ移動中...',
-      success: 'ゴミ箱へ移動しました',
-      error: 'ゴミ箱へ移動できませんでした',
+      loading: 'チームをゴミ箱へ移動中...',
+      success: 'チームをゴミ箱へ移動しました',
+      error: 'チームをゴミ箱へ移動できませんでした',
     });
 
     router.push('/teams');
+  };
+
+  const onProjectArchive = () => {
+    const promise = projectArchive({ projectId: projectId! });
+
+    toast.promise(promise, {
+      loading: 'プロジェクトをゴミ箱へ移動中...',
+      success: 'プロジェクトをゴミ箱へ移動しました',
+      error: 'プロジェクトをゴミ箱へ移動できませんでした',
+    });
+
+    router.push(`/teams/${teamId}/projects`);
   };
 
   return (
@@ -52,10 +67,16 @@ export const Menu = ({ teamId }: MenuProps) => {
         alignOffset={8}
         forceMount
       >
-        <DropdownMenuItem onClick={onArchive}>
+        <DropdownMenuItem onClick={onTeamArchive}>
           <Trash className="h-4 w-4 mr-2" />
-          ゴミ箱へ移動
+          チームをゴミ箱へ移動
         </DropdownMenuItem>
+        {projectId && (
+          <DropdownMenuItem onClick={onProjectArchive}>
+            <Trash className="h-4 w-4 mr-2" />
+            プロジェクトをゴミ箱へ移動
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <div className="text-xs text-muted-foreground p-2">
           最後の編集者: {user?.username}

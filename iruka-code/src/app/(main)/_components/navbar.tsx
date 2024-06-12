@@ -66,22 +66,34 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
           />
         )}
         <div className="flex items-center justify-between w-full">
-          <TeamTitle initialData={team} />
-          <div className="flex items-center gap-x-2">
-            <Menu teamId={team._id} />
+          <div className="flex items-center">
+            <TeamTitle initialData={team} />
+            {project && (
+              <>
+                <div className="mx-2">{'>'}</div>
+                <ProjectTitle initialData={project} />
+              </>
+            )}
+            {_class && (
+              <>
+                <div className="mx-2">{'>'}</div>
+                <ClassTitle initialData={_class} />
+              </>
+            )}
           </div>
-          {project && (
-            <>
-              <div className="mx-2">{'>'}</div>
-              <ProjectTitle initialData={project} />
-            </>
-          )}
-          {_class && (
-            <>
-              <div className="mx-2">{'>'}</div>
-              <ClassTitle initialData={_class} />
-            </>
-          )}
+          <div className="flex items-center gap-x-2">
+            {_class ? (
+              <Menu
+                teamId={team._id}
+                projectId={project!._id}
+                classId={_class._id}
+              />
+            ) : project ? (
+              <Menu teamId={team._id} projectId={project._id} />
+            ) : (
+              <Menu teamId={team._id} />
+            )}
+          </div>
         </div>
       </nav>
       {team.is_archived && <TeamBanner teamId={team._id} />}
