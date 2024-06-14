@@ -1,7 +1,7 @@
 'use client';
 
 import { Doc } from '@convex/_generated/dataModel';
-import { Smile, X } from 'lucide-react';
+import { ImageIcon, Smile, X } from 'lucide-react';
 import { IconPicker } from './icon-picker';
 import { Button } from './ui/button';
 
@@ -42,9 +42,19 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
               size="sm"
             >
               <Smile className="h-4 w-4 mr-2" />
-              Add icon
+              アイコンを追加
             </Button>
           </IconPicker>
+        )}
+        {!initialData.coverImage && !preview && (
+          <Button
+            className="text-muted-foreground text-xs"
+            variant="outline"
+            size="sm"
+            onClick={() => {}}
+          >
+            <ImageIcon className="h-4 w-4 mr-2" />
+          </Button>
         )}
       </div>
     </div>
