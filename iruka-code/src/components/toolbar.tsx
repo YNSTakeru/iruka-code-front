@@ -54,6 +54,7 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
             onClick={() => {}}
           >
             <ImageIcon className="h-4 w-4 mr-2" />
+            カバー画像を追加
           </Button>
         )}
       </div>
