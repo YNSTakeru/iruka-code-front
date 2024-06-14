@@ -24,8 +24,6 @@ const TeamIdPage = ({ params }: TeamIdPageProps) => {
     return <div>見つかりません</div>;
   }
 
-  console.log(params);
-
   return (
     <div className="pb-40">
       <div className="h-[35vh]" />
