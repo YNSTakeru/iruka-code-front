@@ -1,5 +1,6 @@
 'use client';
 
+import { useCoverImage } from '@/hooks/use-cover-image';
 import { cn } from '@/lib/utils';
 import { ImageIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -11,6 +12,8 @@ interface CoverImageProps {
 }
 
 export const Cover = ({ url, preview }: CoverImageProps) => {
+  const coverImage = useCoverImage();
+
   return (
     <div
       className={cn(
@@ -23,7 +26,7 @@ export const Cover = ({ url, preview }: CoverImageProps) => {
       {url && !preview && (
         <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
           <Button
-            onClick={() => {}}
+            onClick={coverImage.onOpen}
             className="text-muted-foreground text-xs"
             variant="outline"
             size="sm"
