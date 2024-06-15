@@ -337,3 +337,32 @@ export const removeIcon = mutation({
     return team;
   },
 });
+
+export const removeCoverImage = mutation({
+  args: { id: v.id('teams') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('認証されていません');
+    }
+
+    const userId = identity.subject;
+
+    const existingTeam = await ctx.db.get(args.id);
+
+    if (!existingTeam) {
+      throw new Error('チームが見つかりません');
+    }
+
+    if (existingTeam.userId !== userId) {
+      throw new Error('権限がありません');
+    }
+
+    const team = await ctx.db.patch(args.id, {
+      coverImage: undefined,
+    });
+
+    return team;
+  },
+});

@@ -2,8 +2,12 @@
 
 import { useCoverImage } from '@/hooks/use-cover-image';
 import { cn } from '@/lib/utils';
+import { api } from '@convex/_generated/api';
+import { Id } from '@convex/_generated/dataModel';
+import { useMutation } from 'convex/react';
 import { ImageIcon } from 'lucide-react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { Button } from './ui/button';
 
 interface CoverImageProps {
@@ -12,7 +16,15 @@ interface CoverImageProps {
 }
 
 export const Cover = ({ url, preview }: CoverImageProps) => {
+  const params = useParams();
   const coverImage = useCoverImage();
+  const removeCoverImage = useMutation(api.teams.removeCoverImage);
+
+  const onRemove = () => {
+    removeCoverImage({
+      id: params.teamId as Id<'teams'>,
+    });
+  };
 
   return (
     <div
@@ -35,7 +47,7 @@ export const Cover = ({ url, preview }: CoverImageProps) => {
             画像を変更
           </Button>
           <Button
-            onClick={() => {}}
+            onClick={onRemove}
             className="text-muted-foreground text-xs"
             variant="outline"
             size="sm"
