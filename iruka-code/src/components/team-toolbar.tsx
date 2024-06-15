@@ -1,5 +1,6 @@
 'use client';
 
+import { useCoverImage } from '@/hooks/use-cover-image';
 import { api } from '@convex/_generated/api';
 import { Doc } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
@@ -21,6 +22,8 @@ export const TeamToolbar = ({ initialData, preview }: TeamToolbarProps) => {
 
   const update = useMutation(api.teams.update);
   const removeIcon = useMutation(api.teams.removeIcon);
+
+  const coverImage = useCoverImage();
 
   const enableInput = () => {
     if (preview) return;
@@ -99,7 +102,7 @@ export const TeamToolbar = ({ initialData, preview }: TeamToolbarProps) => {
             className="text-muted-foreground text-xs"
             variant="outline"
             size="sm"
-            onClick={() => {}}
+            onClick={coverImage.onOpen}
           >
             <ImageIcon className="h-4 w-4 mr-2" />
             カバー画像を追加
