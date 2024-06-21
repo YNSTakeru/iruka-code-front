@@ -1,11 +1,12 @@
 'use client';
 
 import { useCoverImage } from '@/hooks/use-cover-image';
+import { useEdgeStore } from '@/lib/edgestore';
 import { cn } from '@/lib/utils';
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, X } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { Button } from './ui/button';
@@ -16,11 +17,16 @@ interface CoverImageProps {
 }
 
 export const Cover = ({ url, preview }: CoverImageProps) => {
-  const params = useParams();
-  const coverImage = useCoverImage();
-  const removeCoverImage = useMutation(api.teams.removeCoverImage);
+  const { edgestore } = useEdgeStore();
 
-  const onRemove = () => {
+  const params = useParams();
+  const removeCoverImage = useMutation(api.teams.removeCoverImage);
+  const coverImage = useCoverImage();
+
+  const onRemove = async () => {
+    if (url) {
+      await edgestore.publicFiles.delete({ url });
+    }
     removeCoverImage({
       id: params.teamId as Id<'teams'>,
     });
@@ -29,31 +35,31 @@ export const Cover = ({ url, preview }: CoverImageProps) => {
   return (
     <div
       className={cn(
-        'relative w-full h-[35vh] group',
+        `relative w-full h-[35vh] group`,
         !url && 'h-[12vh]',
         url && 'bg-muted',
       )}
     >
-      {!!url && <Image src={url} fill alt="Cover" className="object-cover" />};
+      {!!url && <Image className="object-cover" src={url} alt="Cover" fill />}
       {url && !preview && (
-        <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
+        <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex gap-x-2 items-center">
           <Button
-            onClick={coverImage.onOpen}
             className="text-muted-foreground text-xs"
             variant="outline"
             size="sm"
+            onClick={() => coverImage.onOpen}
           >
-            <ImageIcon className="h-4 w-4 mr-2" />
-            画像を変更
+            <ImageIcon className="w-4 h-4 mr-2" />
+            Change Cover
           </Button>
           <Button
-            onClick={onRemove}
             className="text-muted-foreground text-xs"
             variant="outline"
             size="sm"
+            onClick={onRemove}
           >
-            <ImageIcon className="h-4 w-4 mr-2" />
-            画像を削除
+            <X className="w-4 h-4 mr-2" />
+            Remove
           </Button>
         </div>
       )}
