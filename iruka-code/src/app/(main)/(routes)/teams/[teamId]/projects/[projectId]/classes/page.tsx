@@ -1,3 +1,5 @@
+'use client';
+
 import { useUser } from '@clerk/clerk-react';
 import { redirect, useParams } from 'next/navigation';
 
