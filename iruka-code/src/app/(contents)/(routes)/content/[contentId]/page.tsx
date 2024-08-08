@@ -1,6 +1,7 @@
 'use client';
 
 import Live from '@/components/Live';
+import Navbar from '@/components/Navbar';
 import { Work_Sans } from 'next/font/google';
 
 const workSans = Work_Sans({
@@ -11,8 +12,14 @@ const workSans = Work_Sans({
 
 export default function Page() {
   return (
-    <div className={`${workSans.className}  bg-primary-grey-200`}>
-      <Live />
-    </div>
+    <main
+      className={`${workSans.className}  bg-primary-grey-200 h-screen overflow-hidden`}
+    >
+      <Navbar />
+
+      <section className="flex h-full flex-row">
+        <Live />
+      </section>
+    </main>
   );
 }
