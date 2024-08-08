@@ -1,3 +1,6 @@
+'use client';
+
+import Live from '@/components/Live';
 import { Work_Sans } from 'next/font/google';
 
 const workSans = Work_Sans({
@@ -8,10 +11,8 @@ const workSans = Work_Sans({
 
 export default function Page() {
   return (
-    <h1
-      className={`${workSans.className} h-[100vh] w-full flex justify-center items-center text-center bg-primary-grey-200`}
-    >
-      <h1 className="text-2xl text-white">Liveblocks Figma Clone</h1>
-    </h1>
+    <div className={`${workSans.className}  bg-primary-grey-200`}>
+      <Live />
+    </div>
   );
 }
