@@ -1,12 +1,22 @@
 'use client';
 
+import Loader from '@/components/Loader';
 import { RoomProvider } from '@/liveblocks.config';
+import { LiveMap } from '@liveblocks/client';
 import { ClientSideSuspense } from '@liveblocks/react';
 
 const Room = ({ children }: { children: React.ReactNode }) => {
   return (
-    <RoomProvider id="my-room" initialPresence={{}}>
-      <ClientSideSuspense fallback={<div>読み込み中...</div>}>
+    <RoomProvider
+      id="my-room"
+      initialPresence={{
+        cursor: null,
+        cursorColor: null,
+        editingText: null,
+      }}
+      initialStorage={{ canvasObjects: new LiveMap() }}
+    >
+      <ClientSideSuspense fallback={<Loader />}>
         {() => children}
       </ClientSideSuspense>
     </RoomProvider>
