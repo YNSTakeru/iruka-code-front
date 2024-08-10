@@ -64,7 +64,13 @@ const Navbar = ({
                 </Button>
               </NewThread>
             ) : (
-              <Button className="relative w-5 h-5 object-contain">
+              <Button
+                className={
+                  isActive(item.value)
+                    ? 'relative w-5 h-5 object-contain bg-primary-green hover:bg-primary-green'
+                    : 'relative w-5 h-5 object-contain'
+                }
+              >
                 <Image
                   src={item.icon}
                   alt={item.name}

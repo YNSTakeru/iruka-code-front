@@ -27,7 +27,11 @@ const ShapesMenu = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="no-ring">
           <Button
-            className="relative h-5 w-5 object-contain"
+            className={
+              isDropdownElem
+                ? 'relative h-5 w-5 object-contain bg-primary-green hover:bg-primary-green'
+                : 'relative h-5 w-5 object-contain'
+            }
             onClick={() => handleActiveElement(item)}
           >
             <Image

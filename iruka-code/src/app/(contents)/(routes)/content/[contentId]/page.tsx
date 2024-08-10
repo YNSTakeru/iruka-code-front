@@ -14,18 +14,28 @@ import {
   initializeFabric,
   renderCanvas,
 } from '@/lib/canvas';
-import { handleDelete } from '@/lib/key-events';
-import { useMutation, useStorage } from '@/liveblocks.config';
+import { handleDelete, handleKeyDown } from '@/lib/key-events';
+import { useMutation, useRedo, useStorage, useUndo } from '@/liveblocks.config';
 import { ActiveElement } from '@/types/type';
 import { fabric } from 'fabric';
+import { Work_Sans } from 'next/font/google';
 import { useEffect, useRef, useState } from 'react';
 
+const workSans = Work_Sans({
+  subsets: ['latin'],
+  variable: '--font-work-sans',
+  weight: ['400', '600', '700'],
+});
+
 export default function Page() {
+  const undo = useUndo();
+  const redo = useRedo();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
   const isDrawing = useRef(false);
   const shapeRef = useRef<fabric.Object | null>(null);
-  const selectedShapeRef = useRef<string | null>('rectangle');
+  const selectedShapeRef = useRef<string | null>(null);
 
   const activeObjectRef = useRef<fabric.Object | null>(null);
 
@@ -93,7 +103,7 @@ export default function Page() {
   useEffect(() => {
     const canvas = initializeFabric({ canvasRef, fabricRef });
 
-    canvas.on('mouse:down', (options) => {
+    canvas.on('mouse:down', (options: any) => {
       handleCanvasMouseDown({
         options,
         canvas,
@@ -102,7 +112,7 @@ export default function Page() {
         selectedShapeRef,
       });
     });
-    canvas.on('mouse:move', (options) => {
+    canvas.on('mouse:move', (options: any) => {
       handleCanvaseMouseMove({
         options,
         canvas,
@@ -112,7 +122,7 @@ export default function Page() {
         syncShapeInStorage,
       });
     });
-    canvas.on('mouse:up', (options) => {
+    canvas.on('mouse:up', () => {
       handleCanvasMouseUp({
         canvas,
         isDrawing,
@@ -124,7 +134,7 @@ export default function Page() {
       });
     });
 
-    canvas.on('object:modified', (options) => {
+    canvas.on('object:modified', (options: any) => {
       handleCanvasObjectModified({
         options,
         syncShapeInStorage,
@@ -133,6 +143,17 @@ export default function Page() {
 
     window.addEventListener('resize', () => {
       handleResize({ canvas: fabricRef.current });
+    });
+
+    window.addEventListener('keydown', (e: any) => {
+      handleKeyDown({
+        e,
+        canvas: fabricRef.current,
+        undo,
+        redo,
+        syncShapeInStorage,
+        deleteShapeFromStorage,
+      });
     });
 
     return () => {
@@ -155,8 +176,10 @@ export default function Page() {
         handleActiveElement={handleActiveElement}
       />
 
-      <section className="flex h-full flex-row">
-        <LeftSidebar />
+      <section
+        className={`${workSans.className} bg-primary-grey-200 flex h-full flex-row`}
+      >
+        <LeftSidebar allShapes={Array.from(canvasObjects)} />
         <Live canvasRef={canvasRef} />
         <RightSidebar />
       </section>
