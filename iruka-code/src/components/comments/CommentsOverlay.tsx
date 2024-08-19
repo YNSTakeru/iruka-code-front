@@ -10,7 +10,6 @@ import {
   useThreads,
   useUser,
 } from '@/liveblocks.config';
-
 import { PinnedThread } from './PinnedThread';
 
 type OverlayThreadProps = {

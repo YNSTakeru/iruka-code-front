@@ -7,6 +7,7 @@ import {
 } from '@/liveblocks.config';
 import { CursorMode, CursorState, Reaction, ReactionEvent } from '@/types/type';
 import { useCallback, useEffect, useState } from 'react';
+import { Comments } from './comments/Comments';
 import CursorChat from './cursor/CursorChat';
 import LiveCursors from './cursor/LiveCursors';
 import FlyingReaction from './reaction/FlyingReaction';
@@ -160,7 +161,7 @@ const Live = ({ canvasRef }: Props) => {
       onPointerLeave={handlePointerLeave}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
-      className="h-[100vh] w-full flex justify-center items-center text-center"
+      className="relative h-full w-full flex justify-center items-center text-center"
     >
       <canvas ref={canvasRef} />
 
@@ -186,6 +187,8 @@ const Live = ({ canvasRef }: Props) => {
         <ReactionSelector setReaction={setReactions} />
       )}
       <LiveCursors others={others} />
+
+      <Comments />
     </div>
   );
 };
