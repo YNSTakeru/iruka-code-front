@@ -225,7 +225,7 @@ export default function Page() {
         className={`${workSans.className} bg-primary-grey-200 flex h-full flex-row`}
       >
         <LeftSidebar allShapes={Array.from(canvasObjects)} />
-        <Live canvasRef={canvasRef} />
+        <Live canvasRef={canvasRef} undo={undo} redo={redo} />
         <RightSidebar
           elementAttributes={elementeAttributes}
           setElementAttributes={setElementAttributes}
