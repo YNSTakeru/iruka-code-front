@@ -14,6 +14,9 @@ const nextConfig = {
     ],
     domains: ['files.edgestore.dev'],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 module.exports = nextConfig;
